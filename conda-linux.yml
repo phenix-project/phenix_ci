@@ -9,7 +9,6 @@
 #   distribution: centos, ubuntu
 #   version: [6, 10]
 #   modules: <modules artifact name>
-#   pipeline: <pipeline name>
 #   builder: <cctbx builder>
 #   test_module: <module for testing>
 
@@ -121,7 +120,7 @@ jobs:
       path: $(Pipeline.Workspace)
     displayName: Download cached build
     condition: >
-      and(eq(variables['Build.DefinitionName'], '${{ parameters.pipeline }}'),
+      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
           eq(variables['day'], 'Sunday'))
     continueOnError: true
 
@@ -136,7 +135,7 @@ jobs:
       path: $(Pipeline.Workspace)
     displayName: Download cached build
     condition: >
-      or(and(eq(variables['Build.DefinitionName'], '${{ parameters.pipeline }}'),
+      or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
              ne(variables['day'], 'Sunday')),
          eq(variables['Build.DefinitionName'], 'CI'),
          eq(variables['Build.DefinitionName'], 'CI branch'),
@@ -149,7 +148,7 @@ jobs:
       rm build.tar
     displayName: Extract build tarball
     condition: >
-      or(and(eq(variables['Build.DefinitionName'], '${{ parameters.pipeline }}'),
+      or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
              ne(variables['day'], 'Sunday')),
          eq(variables['Build.DefinitionName'], 'CI'),
          eq(variables['Build.DefinitionName'], 'CI branch'),
@@ -171,7 +170,7 @@ jobs:
       tar -chzf build.tar build
     displayName: Build tarball
     condition: >
-      and(eq(variables['Build.DefinitionName'], '${{ parameters.pipeline }}'),
+      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
           or(eq(variables['Build.Reason'], 'Schedule'),
              eq(variables['Build.Reason'], 'Manual')),
           eq(variables['System.StageAttempt'], 1),
@@ -182,7 +181,7 @@ jobs:
   - publish: $(Pipeline.Workspace)/build.tar
     artifact: $(artifact_name)
     condition: >
-      and(eq(variables['Build.DefinitionName'], '${{ parameters.pipeline }}'),
+      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
           or(eq(variables['Build.Reason'], 'Schedule'),
              eq(variables['Build.Reason'], 'Manual')),
           eq(variables['System.StageAttempt'], 1),
