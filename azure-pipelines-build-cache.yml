@@ -1,0 +1,43 @@
+# Script for nightly build of phenix
+
+# no continuous integration builds or pull requests
+trigger: none
+pr: none
+
+# Daily builds
+schedules:
+- cron: '0 3 * * *'
+  displayName: Daily builds for phenix
+  branches:
+    include:
+    - master
+
+resources:
+  pipelines:
+  # - pipeline: build_cache
+  #   source: 'Update build cache'
+  - pipeline: data_cache
+    project: phenix
+    source: 'Update modules'
+  - pipeline: cctbx_data_cache
+    project: cctbx_project
+    source: 'Update data cache'
+  - pipeline: cctbx_build_cache
+    project: cctbx_project
+    source: 'Update build cache'
+
+stages:
+- stage: Preparation
+  displayName: Download
+  jobs:
+    - template: ./download-conda.yml
+
+- stage: Build
+  displayName: Build and test
+  jobs:
+    - template: ./full-build.yml
+      parameters:
+        modules: modules
+        pipeline: phenix_regression
+        builder: phenix
+        test_module: phenix

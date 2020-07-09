@@ -1,0 +1,142 @@
+# Script for checking out sources and storing it as an artifact
+# The artifact name is "modules"
+#
+# Parameters:
+#   flags: <empty>, --use-conda
+#   optimization: <empty>, 0, 1, 2, 3
+#   builder: cctbx builder (e.g. cctbx, phaser, etc.)
+
+jobs:
+- job: modules${{ parameters.optimization }}
+  pool:
+    vmImage: ubuntu-latest
+  timeoutInMinutes: 90
+
+  steps:
+
+  # download sources
+  - checkout: self
+    path: ./modules/phenix
+
+  - script: |
+      cd $(Pipeline.Workspace)
+      wget https://raw.githubusercontent.com/cctbx/cctbx_project/master/libtbx/auto_build/bootstrap.py
+    displayName: Link bootstrap.py
+
+  - task: InstallSSHKey@0
+    inputs:
+      knownHostsEntry: cci.lbl.gov,131.243.194.153 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPOtqyYASs6hc3fsmUQn92ovSozJsMsJyrMWjppUERX1tD4Fh0D7YaNhLvYpKi5mYVREo+tsKoOatCcqKGHCONWpzx7JHXUzfIBsy6nCeygRyyW4yuyoCuYFvOYLkaM4PrN/7XaZEnp1ux6/ZcbRxBDNK4f42svJUV39OX33tRuQWpP+O85paJr1ePHVz6U2n14a+3fRN3DBMti1dJuKOThU4djYEBQimx54pnW71eYORN2oUz+N/4RHAcomtxZpcUMl3Qadw8hD4s1XM6fzJ0Que7KefnnrPOgAEtZxKl9j09aaE70Oh+ie5Y6ckwddJ/4qZB5m2tBaEi3xuy0TSQ==
+      sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA7XgVgdU9GmZuo5yVyW/htrAuxe7ypuq7IowWwfUC0WZw9SPzQ8kOGj63plF3ytx/qpgvUlS1AiywO20rZ83gHmRdAiuvt9laH09KlWEUhIhAQTzesqBG5aUT0MKo01yxijoRl5HC8w/MdOanc0h01e6IxnZvgG0N30RB1i4xVPCtR/VBmXSp4R0T+Q/gJjfQssuBxHVMrrute4V3uUHek58FL2QgUB0+zq6ipETjuCJxTSyYVAFtCYDPYs+0lAYYkWrXALCr9kX9s22jYtkyv5kNw6mEW8nhtA7GbTdJLv4M6/WYtcvQV8TDcNCfltOfl81U3gcZ9zhQDKGVoNaJEw== buildbot@cci.lbl.gov
+      sshKeySecureFile: id_rsa
+    displayName: Download SSH key
+
+  # download test data
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
+      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      artifact: 'chem_data'
+      path: $(Pipeline.Workspace)/modules/chem_data
+    displayName: Download chem_data
+
+  - script: |
+      if [ ! -d "$(Pipeline.Workspace)/modules/chem_data" ]; then
+        svn co svn+ssh://builder@cci.lbl.gov/chem_data/trunk chem_data
+      fi
+      cd $(Pipeline.Workspace)/modules/chem_data
+      svn update
+    displayName: Update chem_data
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
+      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      artifact: 'phenix_regression'
+      path: $(Pipeline.Workspace)/modules/phenix_regression
+    displayName: Download phenix_regression
+
+  - script: |
+      cd $(Pipeline.Workspace)/modules/phenix_regression
+      git reset --hard origin/master
+      git lfs install --local
+      git pull --rebase
+      git lfs pull
+    displayName: Update phenix_regression
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
+      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      artifact: 'phenix_examples'
+      path: $(Pipeline.Workspace)/modules/phenix_examples
+    displayName: Download phenix_examples
+
+  - script: |
+      cd $(Pipeline.Workspace)/modules/phenix_examples
+      git reset --hard origin/master
+      git lfs install --local
+      git pull --rebase
+      git lfs pull
+    displayName: Update phenix_examples
+
+  # download remaining sources
+  - script: |
+      cd $(Pipeline.Workspace)
+      python bootstrap.py hot update --builder=${{ parameters.builder }} ${{ parameters.flags }}
+    displayName: Download sources
+
+  # change optimization level (linux, macOS)
+  - script: |
+      cd $(Pipeline.Workspace)/modules/cctbx_project/libtbx
+      # Remove -ffast-math
+      sed -i 's/-ffast-math//g' SConscript
+      # Change -O level
+      sed -i 's/-O3/-O${{ parameters.optimization }}/g' SConscript
+    displayName: Changing optimization (linux, macOS)
+    condition: or(eq('${{ parameters.optimization }}', 0), eq('${{ parameters.optimization }}', 1), eq('${{ parameters.optimization }}', 2), eq('${{ parameters.optimization }}', 3))
+
+  # change optimization level (Windows)
+  - script: |
+      cd $(Pipeline.Workspace)/modules/cctbx_project/libtbx
+      # Remove /fp:fast
+      sed -i 's/\/fp:fast//g' SConscript
+      # Change /O2 to /O1
+      sed -i 's/\/O2/\/O1/g' SConscript
+    displayName: Changing optimization (Windows)
+    condition: or(eq('${{ parameters.optimization }}', 0), eq('${{ parameters.optimization }}', 1))
+
+  # remove hidden and test files, compress, preserve permissions
+  - script: |
+      cd $(Pipeline.Workspace)
+      rm -fr modules/chem_data/* modules/phenix_regression/* modules/phenix_examples/*
+      rm -fr modules/*/.git/*
+      rm -fr modules/*/.svn/*
+      tar -chzf modules.tar modules
+    displayName: Build tarball
+
+  # download public key
+  - task: DownloadSecureFile@1
+    name: public_key
+    inputs:
+      secureFile: 'id_rsa.pub'
+    displayName: Download public key
+
+  # encrypt tarball
+  - script: |
+      cd $(Pipeline.Workspace)
+      openssl rand -base64 32 > password
+      openssl rsautl -encrypt -inkey $(public_key.secureFilePath) -pubin -in password -out password.enc
+      openssl enc -aes-256-cbc -salt -in modules.tar -out modules.enc -md sha256 -pass file:./password
+    displayName: Encrypt tarball
+
+  # publish artifacts
+  - publish: $(Pipeline.Workspace)/modules.enc
+    artifact: modules${{ parameters.optimization }}
+    continueOnError: true
+
+  - publish: $(Pipeline.Workspace)/password.enc
+    artifact: password
+    continueOnError: true
