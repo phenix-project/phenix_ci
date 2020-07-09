@@ -12,7 +12,7 @@ jobs:
     vmImage: ubuntu-latest
   timeoutInMinutes: 90
   strategy:
-    maxParallel: 3
+    maxParallel: 2
     matrix:
       linux_py27:
         OS: linux-64
