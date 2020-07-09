@@ -101,7 +101,7 @@ jobs:
 
   - script: |
       echo "##vso[task.setvariable variable=LC_ALL]en_US.utf8"
-    displayName: Setup locale for CentOS 8
+    displayName: Setup locale for Ubuntu
       condition: eq('${{ parameters.distribution }}', 'ubuntu')
 
   - script: |
