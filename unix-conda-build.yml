@@ -10,7 +10,6 @@
 #   distribution: centos, ubuntu
 #   version: [6, 10]
 #   builder: cctbx builder
-#   test_module: module for testing
 
 steps:
 
@@ -149,23 +148,9 @@ steps:
 #     source ./build/setpaths.sh
 #     mkdir tests
 #     cd tests
-#     libtbx.run_tests_parallel module=${{ parameters.test_module }} nproc=4
-#   failOnStderr: false
-#   displayName: Test
-#   condition: not(eq('${{ parameters.test_module }}', 'phenix'))
-
-# - script: |
-#     set -x -e
-#     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
-#     conda activate $(PYTHON_VERSION)
-#     cd $(Pipeline.Workspace)
-#     source ./build/setpaths.sh
-#     mkdir tests
-#     cd tests
 #     phenix_regression.test_all_parallel nproc=4
 #   failOnStderr: false
 #   displayName: Test
-#   condition: eq('${{ parameters.test_module }}', 'phenix')
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()

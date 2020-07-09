@@ -10,7 +10,6 @@
 #   version: [6, 10]
 #   modules: <modules artifact name>
 #   builder: <cctbx builder>
-#   test_module: <module for testing>
 
 jobs:
 - job: ${{ format('{0}_{1}', parameters.distribution, join('_', parameters.version) ) }}
@@ -162,7 +161,6 @@ jobs:
       distribution: ${{ parameters.distribution }}
       version: ${{ parameters.version }}
       builder: ${{ parameters.builder }}
-      test_module: ${{ parameters.test_module }}
 
   # preserve permissions
   - script: |

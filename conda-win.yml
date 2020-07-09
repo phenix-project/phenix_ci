@@ -5,14 +5,11 @@
 #
 # Template Parameters:
 #   builder: cctbx builder
-#   test_module: module to test
-#   pipeline: pipeline name
 #
 # Parameters:
 #   vmImage: vs2017-win2016, windows-2019
 #   vs: vs2015, vs2017
 #   modules: <modules artifact name>
-#   pipeline: <pipeline name>
 
 jobs:
 - job: ${{ parameters.vs }}
@@ -269,24 +266,10 @@ jobs:
   #     call .\build\setpaths.bat
   #     mkdir tests
   #     cd tests
-  #     call libtbx.run_tests_parallel module=${{ parameters.test_module }} nproc=4
-  #   condition: and(or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-  #                         eq('${{ parameters.vs }}', 'vs2015')),
-  #                     ne(variables['PYTHON_VERSION'], 'py27')),
-  #                  not(eq('${{ parameters.test_module }}', 'phenix')))
-  #   failOnStderr: false
-  #   displayName: Test
-
-  # - script: |
-  #     cd $(Pipeline.Workspace)
-  #     call .\build\setpaths.bat
-  #     mkdir tests
-  #     cd tests
   #     phenix_regression.run_tests_parallel nproc=4
-  #   condition: and(or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-  #                         eq('${{ parameters.vs }}', 'vs2015')),
-  #                     ne(variables['PYTHON_VERSION'], 'py27')),
-  #                  eq('${{ parameters.test_module }}', 'phenix'))
+  #   condition: or(and(eq(variables['PYTHON_VERSION'], 'py27'),
+  #                     eq('${{ parameters.vs }}', 'vs2015')),
+  #                 ne(variables['PYTHON_VERSION'], 'py27'))
   #   failOnStderr: false
   #   displayName: Test
 

@@ -11,7 +11,6 @@
 #   xcode_version: [11, 3, 1]  # xCode version
 #   modules: <modules artifact name>
 #   builder: <cctbx builder>
-#   test_module: <module for testing>
 
 jobs:
 - job: ${{ format('{0}_{1}', format('macOS_{0}', join('_', parameters.vmImage)), format('xcode_{0}', join('_', parameters.xcode_version)) ) }}
@@ -122,7 +121,6 @@ jobs:
   - template: ./unix-conda-build.yml
     parameters:
       builder: ${{ parameters.builder }}
-      test_module: ${{ parameters.test_module }}
 
   # preserve permissions
   - script: |

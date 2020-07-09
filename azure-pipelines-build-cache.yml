@@ -19,8 +19,8 @@ resources:
     name: phenix-project/phenix
     endpoint: phenix-project
   pipelines:
-  # - pipeline: build_cache
-  #   source: 'Update build cache'
+  - pipeline: build_cache
+    source: 'Update build cache'
   - pipeline: data_cache
     project: phenix
     source: 'Update modules'
@@ -43,6 +43,5 @@ stages:
     - template: ./full-build.yml
       parameters:
         modules: modules
-        pipeline: phenix_regression
         builder: phenix
         test_module: phenix
