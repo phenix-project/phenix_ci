@@ -117,12 +117,12 @@ steps:
     conda install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml
   displayName: Create conda environment
 
-- script: |
-    set -x -e
-    source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
-    conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
-  condition: eq('${{ parameters.version[0] }}', 6)
-  displayName: Remove OpenMP headers from conda environment
+# - script: |
+#     set -x -e
+#     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+#     conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
+#   condition: eq('${{ parameters.version[0] }}', 6)
+#   displayName: Remove OpenMP headers from conda environment
 
 # - script: |
 #     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
