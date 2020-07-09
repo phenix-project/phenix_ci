@@ -13,6 +13,11 @@ schedules:
     - master
 
 resources:
+  repositories:
+  - repository: phenix
+    type: github
+    name: phenix-project/phenix
+    endpoint: phenix-project
   pipelines:
   # - pipeline: build_cache
   #   source: 'Update build cache'
