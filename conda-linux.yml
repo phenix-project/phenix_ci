@@ -68,8 +68,10 @@ jobs:
     condition: eq('${{ parameters.distribution }}', 'centos')
 
   - script: |
+      set -x -e
       sudo yum groupinstall -y 'Development Tools'
-      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel tcsh
+      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh
+      locale -a
     displayName: Install dependencies for CentOS
     condition: eq('${{ parameters.distribution }}', 'centos')
 
@@ -78,7 +80,7 @@ jobs:
     displayName: Install argparse for CentOS 6
     condition: eq('${{ parameters.version[0] }}', 6)
 
-  - bash: |
+  - script: |
       echo "##vso[task.setvariable variable=LC_ALL]C.utf8"
     displayName: Setup locale for CentOS 8
     condition: eq('${{ parameters.version[0] }}', 8)
@@ -98,6 +100,11 @@ jobs:
     condition: eq('${{ parameters.distribution }}', 'ubuntu')
 
   - script: |
+      echo "##vso[task.setvariable variable=LC_ALL]en_US.utf8"
+    displayName: Setup locale for CentOS 8
+      condition: eq('${{ parameters.distribution }}', 'ubuntu')
+
+  - script: |
       echo $(System.CollectionId)
       echo $(System.CollectionUri)
       echo $(System.TeamProject)
@@ -111,10 +118,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '75afa8c8-2ebc-45d8-96a6-e9ee505ca90e'
-      pipeline: 16
-      # project: '$(resources.pipeline.build_cache.projectID)'
-      # pipeline: '$(resources.pipeline.build_cache.pipelineID)'
+      project: '$(resources.pipeline.cctbx_build_cache.projectID)'
+      pipeline: '$(resources.pipeline.cctbx_build_cache.pipelineID)'
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
       artifact: '$(artifact_name)'
@@ -128,8 +133,10 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.build_cache.projectID)'
-      pipeline: '$(resources.pipeline.build_cache.pipelineID)'
+      project: '75afa8c8-2ebc-45d8-96a6-e9ee505ca90e'
+      pipeline: 16
+      # project: '$(resources.pipeline.build_cache.projectID)'
+      # pipeline: '$(resources.pipeline.build_cache.pipelineID)'
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
       artifact: '$(artifact_name)'
