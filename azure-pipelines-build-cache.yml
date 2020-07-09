@@ -44,4 +44,3 @@ stages:
       parameters:
         modules: modules
         builder: phenix
-        test_module: phenix
