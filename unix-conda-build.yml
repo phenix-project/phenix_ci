@@ -152,8 +152,8 @@ steps:
 #   failOnStderr: false
 #   displayName: Test
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '$(Pipeline.Workspace)/tests/output.xml'
+# - task: PublishTestResults@2
+#   condition: succeededOrFailed()
+#   inputs:
+#     testResultsFormat: 'JUnit'
+#     testResultsFiles: '$(Pipeline.Workspace)/tests/output.xml'
