@@ -282,8 +282,10 @@ jobs:
   #     testResultsFiles: '$(Pipeline.Workspace)\tests\output.xml'
 
   # preserve permissions
+  # delete modules directory to free space for tarball
   - script: |
       cd $(Pipeline.Workspace)
+      rmdir /Q /S modules
       tar -chzf build.tar build
     displayName: Build tarball
     condition: >
