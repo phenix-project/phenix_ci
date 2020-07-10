@@ -87,8 +87,10 @@ steps:
 - task: DownloadPipelineArtifact@2
   inputs:
     source: 'specific'
-    project: '$(resources.pipeline.build_cache.projectID)'
-    pipeline: '$(resources.pipeline.build_cache.pipelineID)'
+    project: '75afa8c8-2ebc-45d8-96a6-e9ee505ca90e'
+    pipeline: 16
+    # project: '$(resources.pipeline.build_cache.projectID)'
+    # pipeline: '$(resources.pipeline.build_cache.pipelineID)'
     allowPartiallySucceededBuilds: true
     artifact: $(PYTHON_VERSION)_$(OS)
     path: $(Pipeline.Workspace)/channel
