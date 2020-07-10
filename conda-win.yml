@@ -181,7 +181,7 @@ jobs:
     displayName: Download cached build
     condition: >
       and(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-              ne(variables['day'], 'Sunday')),
+              eq(variables['day'], 'Sunday')),
           or(and(eq(variables['PYTHON_VERSION'], 'py27'),
                  eq('${{ parameters.vs }}', 'vs2015')),
              ne(variables['PYTHON_VERSION'], 'py27')))
