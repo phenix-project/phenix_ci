@@ -11,7 +11,7 @@ resources:
     endpoint: phenix-project
   pipelines:
   - pipeline: build_cache
-    source: 'Update build cache'
+    source: 'Update phenix build cache'
   - pipeline: data_cache
     project: phenix
     source: 'Update modules'
