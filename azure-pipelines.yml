@@ -1,0 +1,32 @@
+# Script for nightly build of phenix
+
+# no pull requests
+pr: none
+
+resources:
+  repositories:
+  - repository: phenix
+    type: github
+    name: phenix-project/phenix
+    endpoint: phenix-project
+  pipelines:
+  - pipeline: build_cache
+    source: 'Update build cache'
+  - pipeline: data_cache
+    project: phenix
+    source: 'Update modules'
+  - pipeline: cctbx_data_cache
+    project: cctbx_project
+    source: 'Update data cache'
+  - pipeline: cctbx_build_cache
+    project: cctbx_project
+    source: 'Update build cache'
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+    - template: ./ci-build.yml
+      parameters:
+        modules: modules
+        builder: phenix
