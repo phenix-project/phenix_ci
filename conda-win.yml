@@ -95,6 +95,70 @@ jobs:
   # download components
   - checkout: none
 
+  # download daily cached build directory for builds
+  # always do builds from scratch (starting with cctbx build) on Saturday night (Pacific)
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '$(resources.pipeline.cctbx_build_cache.projectID)'
+      pipeline: '$(resources.pipeline.cctbx_build_cache.pipelineID)'
+      allowPartiallySucceededBuilds: true
+      allowFailedBuilds: true
+      artifact: '$(artifact_name)'
+      path: $(Pipeline.Workspace)
+    displayName: Download cached build
+    condition: >
+      and(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+              eq(variables['day'], 'Sunday')),
+          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
+                 eq('${{ parameters.vs }}', 'vs2015')),
+             ne(variables['PYTHON_VERSION'], 'py27')))
+    continueOnError: true
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: 'specific'
+      project: '75afa8c8-2ebc-45d8-96a6-e9ee505ca90e'
+      pipeline: 16
+      # project: '$(resources.pipeline.build_cache.projectID)'
+      # pipeline: '$(resources.pipeline.build_cache.pipelineID)'
+      allowPartiallySucceededBuilds: true
+      allowFailedBuilds: true
+      artifact: '$(artifact_name)'
+      path: $(Pipeline.Workspace)
+    displayName: Download cached build
+    condition: >
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 ne(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
+                 eq('${{ parameters.vs }}', 'vs2015')),
+             ne(variables['PYTHON_VERSION'], 'py27')))
+    continueOnError: true
+
+  - script: |
+      cd $(Pipeline.Workspace)
+      tar -xf build.tar
+      del build.tar
+    displayName: Extract build tarball
+    condition: >
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 ne(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
+                 eq('${{ parameters.vs }}', 'vs2015')),
+             ne(variables['PYTHON_VERSION'], 'py27')))
+    continueOnError: true
+    failOnStderr: false
+
+  - powershell: |
+      Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
+    displayName: Get disk information on host
+
   # download public key
   - task: DownloadSecureFile@1
     name: private_key
@@ -166,66 +230,6 @@ jobs:
       call %CONDA%\condabin\conda.bat create -y -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)\modules\phenix\conda_envs\phenix_%PYTHON_VERSION%_%OS%.txt
       call %CONDA%\condabin\conda.bat install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml
     displayName: Create conda environment
-
-  # download daily cached build directory for builds
-  # always do builds from scratch (starting with cctbx build) on Saturday night (Pacific)
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      source: 'specific'
-      project: '$(resources.pipeline.cctbx_build_cache.projectID)'
-      pipeline: '$(resources.pipeline.cctbx_build_cache.pipelineID)'
-      allowPartiallySucceededBuilds: true
-      allowFailedBuilds: true
-      artifact: '$(artifact_name)'
-      path: $(Pipeline.Workspace)
-    displayName: Download cached build
-    condition: >
-      and(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-              eq(variables['day'], 'Sunday')),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
-    continueOnError: true
-
-  # - task: DownloadPipelineArtifact@2
-  #   inputs:
-  #     source: 'specific'
-  #     project: '75afa8c8-2ebc-45d8-96a6-e9ee505ca90e'
-  #     pipeline: 16
-  #     # project: '$(resources.pipeline.build_cache.projectID)'
-  #     # pipeline: '$(resources.pipeline.build_cache.pipelineID)'
-  #     allowPartiallySucceededBuilds: true
-  #     allowFailedBuilds: true
-  #     artifact: '$(artifact_name)'
-  #     path: $(Pipeline.Workspace)
-  #   displayName: Download cached build
-  #   condition: >
-  #     and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-  #                ne(variables['day'], 'Sunday')),
-  #            eq(variables['Build.DefinitionName'], 'CI'),
-  #            eq(variables['Build.DefinitionName'], 'CI branch'),
-  #            eq(variables['Build.DefinitionName'], 'Full')),
-  #         or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-  #                eq('${{ parameters.vs }}', 'vs2015')),
-  #            ne(variables['PYTHON_VERSION'], 'py27')))
-  #   continueOnError: true
-
-  # - script: |
-  #     cd $(Pipeline.Workspace)
-  #     tar -xf build.tar
-  #     del build.tar
-  #   displayName: Extract build tarball
-  #   condition: >
-  #     and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-  #                ne(variables['day'], 'Sunday')),
-  #            eq(variables['Build.DefinitionName'], 'CI'),
-  #            eq(variables['Build.DefinitionName'], 'CI branch'),
-  #            eq(variables['Build.DefinitionName'], 'Full')),
-  #         or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-  #                eq('${{ parameters.vs }}', 'vs2015')),
-  #            ne(variables['PYTHON_VERSION'], 'py27')))
-  #   continueOnError: true
-  #   failOnStderr: false
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
