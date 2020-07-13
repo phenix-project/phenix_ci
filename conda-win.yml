@@ -144,14 +144,9 @@ jobs:
       del build.tar
     displayName: Extract build tarball
     condition: >
-      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-                 ne(variables['day'], 'Sunday')),
-             eq(variables['Build.DefinitionName'], 'CI'),
-             eq(variables['Build.DefinitionName'], 'CI branch'),
-             eq(variables['Build.DefinitionName'], 'Full')),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
+      or(and(eq(variables['PYTHON_VERSION'], 'py27'),
+             eq('${{ parameters.vs }}', 'vs2015')),
+         ne(variables['PYTHON_VERSION'], 'py27'))
     continueOnError: true
     failOnStderr: false
 
