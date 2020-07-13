@@ -160,12 +160,6 @@ jobs:
       tar -xf build.tar
       rm build.tar
     displayName: Extract build tarball
-    condition: >
-      or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-             ne(variables['day'], 'Sunday')),
-         eq(variables['Build.DefinitionName'], 'CI'),
-         eq(variables['Build.DefinitionName'], 'CI branch'),
-         eq(variables['Build.DefinitionName'], 'Full'))
     continueOnError: true
     failOnStderr: false
 
