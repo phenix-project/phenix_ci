@@ -45,12 +45,12 @@ jobs:
       version: ['16', '04']
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
-  - template: ./conda-linux.yml
-    parameters:
-      distribution: ubuntu
-      version: ['20', '04']
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
+  # - template: ./conda-linux.yml
+  #   parameters:
+  #     distribution: ubuntu
+  #     version: ['20', '04']
+  #     modules: ${{ parameters.modules }}
+  #     builder: ${{ parameters.builder }}
   - template: ./conda-osx.yml
     parameters:
       vmImage: [10, 15]
