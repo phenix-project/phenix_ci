@@ -11,6 +11,7 @@ resources:
   - pipeline: data_cache
     project: phenix
     source: 'Update modules'
+    trigger: true
   - pipeline: cctbx_data_cache
     project: cctbx_project
     source: 'Update data cache'
