@@ -286,10 +286,7 @@ jobs:
       tar -chzf build.tar build
     displayName: Build tarball
     condition: >
-      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-          or(eq(variables['Build.Reason'], 'Schedule'),
-             eq(variables['Build.Reason'], 'Manual')),
-          eq(variables['System.StageAttempt'], 1),
+      and(eq(variables['System.StageAttempt'], 1),
           eq('${{ parameters.modules }}', 'modules'),
           or(and(eq(variables['PYTHON_VERSION'], 'py27'),
                  eq('${{ parameters.vs }}', 'vs2015')),
@@ -300,10 +297,7 @@ jobs:
   - publish: $(Pipeline.Workspace)/build.tar
     artifact: $(artifact_name)
     condition: >
-      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-          or(eq(variables['Build.Reason'], 'Schedule'),
-             eq(variables['Build.Reason'], 'Manual')),
-          eq(variables['System.StageAttempt'], 1),
+      and(eq(variables['System.StageAttempt'], 1),
           eq('${{ parameters.modules }}', 'modules'),
           or(and(eq(variables['PYTHON_VERSION'], 'py27'),
                  eq('${{ parameters.vs }}', 'vs2015')),
