@@ -87,6 +87,6 @@ jobs:
     failOnStderr: false
 
   # test
-  - template: ./unix-conda-build.yml
+  - template: ./unix-conda-test.yml
     parameters:
       builder: ${{ parameters.builder }}

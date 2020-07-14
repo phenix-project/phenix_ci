@@ -188,9 +188,6 @@ jobs:
     displayName: Download chem_data
 
   - script: |
-      if [ ! -d "$(Pipeline.Workspace)/modules/chem_data" ]; then
-        svn co svn+ssh://builder@cci.lbl.gov/chem_data/trunk chem_data
-      fi
       cd $(Pipeline.Workspace)/modules/chem_data
       svn update
     displayName: Update chem_data
