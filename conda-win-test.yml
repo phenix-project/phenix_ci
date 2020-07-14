@@ -181,50 +181,29 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
-      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      project: '$(resources.pipeline.ci.projectID)'
+      pipeline: '$(resources.pipeline.ci.pipelineID)'
       artifact: 'chem_data'
       path: $(Pipeline.Workspace)/modules/chem_data
     displayName: Download chem_data
 
-  - script: |
-      cd $(Pipeline.Workspace)/modules/chem_data
-      svn update
-    displayName: Update chem_data
-
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
-      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      project: '$(resources.pipeline.ci.projectID)'
+      pipeline: '$(resources.pipeline.ci.pipelineID)'
       artifact: 'phenix_regression'
       path: $(Pipeline.Workspace)/modules/phenix_regression
     displayName: Download phenix_regression
 
-  - script: |
-      cd $(Pipeline.Workspace)/modules/phenix_regression
-      git reset --hard origin/master
-      git lfs install --local
-      git pull --rebase
-      git lfs pull
-    displayName: Update phenix_regression
-
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.cctbx_data_cache.projectID)'
-      pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+      project: '$(resources.pipeline.ci.projectID)'
+      pipeline: '$(resources.pipeline.ci.pipelineID)'
       artifact: 'phenix_examples'
       path: $(Pipeline.Workspace)/modules/phenix_examples
     displayName: Download phenix_examples
-
-  - script: |
-      cd $(Pipeline.Workspace)/modules/phenix_examples
-      git reset --hard origin/master
-      git lfs install --local
-      git pull --rebase
-      git lfs pull
-    displayName: Update phenix_examples
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
