@@ -20,7 +20,7 @@ steps:
 - task: DownloadSecureFile@1
   name: private_key
   inputs:
-    secureFile: 'id_rsa'
+    secureFile: 'file_key'
   displayName: Download private key
 
 - task: DownloadPipelineArtifact@2

@@ -70,7 +70,7 @@ jobs:
   - script: |
       set -x -e
       sudo yum groupinstall -y 'Development Tools'
-      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh
+      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssh openssl tcsh
       locale -a
     displayName: Install dependencies for CentOS
     condition: eq('${{ parameters.distribution }}', 'centos')
