@@ -87,6 +87,7 @@ jobs:
 
   - task: DownloadPipelineArtifact@2
     inputs:
+      source: 'specific'
       project: '$(resources.pipeline.build_cache.projectID)'
       pipeline: '$(resources.pipeline.build_cache.pipelineID)'
       allowPartiallySucceededBuilds: true
