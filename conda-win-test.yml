@@ -175,8 +175,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.ci.projectID)'
-      pipeline: '$(resources.pipeline.ci.pipelineID)'
+      project: '$(resources.pipeline.data_cache.projectID)'
+      pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'chem_data'
       path: $(Pipeline.Workspace)/modules/chem_data
     displayName: Download chem_data
@@ -184,8 +184,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.ci.projectID)'
-      pipeline: '$(resources.pipeline.ci.pipelineID)'
+      project: '$(resources.pipeline.data_cache.projectID)'
+      pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'phenix_regression'
       path: $(Pipeline.Workspace)/modules/phenix_regression
     displayName: Download phenix_regression
@@ -193,8 +193,8 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: 'specific'
-      project: '$(resources.pipeline.ci.projectID)'
-      pipeline: '$(resources.pipeline.ci.pipelineID)'
+      project: '$(resources.pipeline.data_cache.projectID)'
+      pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'phenix_examples'
       path: $(Pipeline.Workspace)/modules/phenix_examples
     displayName: Download phenix_examples
