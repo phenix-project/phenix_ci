@@ -7,11 +7,11 @@ pr: none
 resources:
   pipelines:
   - pipeline: build_cache
-    source: 'Update build cache'
+    source: 'CI'
+    trigger: true
   - pipeline: data_cache
     project: phenix
     source: 'Update modules'
-    trigger: true
   - pipeline: cctbx_data_cache
     project: cctbx_project
     source: 'Update data cache'
@@ -27,6 +27,6 @@ stages:
       parameters:
         modules: modules
         builder: phenix
-        win: ./conda-win.yml
-        linux: ./conda-linux.yml
-        osx: ./conda-osx.yml
+        win: ./conda-win-test.yml
+        linux: ./conda-linux-test.yml
+        osx: ./conda-osx-test.yml

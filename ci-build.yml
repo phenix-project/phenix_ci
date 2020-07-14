@@ -1,21 +1,24 @@
 # Common Parameters:
 #   modules: <modules artifact name>
 #   pipeline: <pipeline name>
+#   win: windows template (build or test)
+#   linux: linux template (build or test)
+#   osx: osx template (build or test)
 
 jobs:
-  - template: ./conda-win.yml
+  - template: ${{ parameters.win }}
     parameters:
       vmImage: vs2017-win2016
       vs: vs2015
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
-  - template: ./conda-linux.yml
+  - template: ${{ parameters.linux }}
     parameters:
       distribution: centos
       version: [6]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
-  - template: ./conda-osx.yml
+  - template: ${{ parameters.osx }}
     parameters:
       vmImage: [10, 14]
       xcode_version: [11, 3, 1]

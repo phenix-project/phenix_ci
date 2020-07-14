@@ -1,0 +1,91 @@
+# Script for building CCTBX
+# macOS image descriptions
+# https://github.com/actions/virtual-environments/blob/master/images/macos/macos-10.15-Readme.md
+# https://github.com/Microsoft/azure-pipelines-image-generation/blob/master/images/macos/macos-10.14-Readme.md
+#
+# Template Parameters:
+#   pipeline: pipeline name
+#
+# Parameters:
+#   vmImage: [10, 14]  # macOs version
+#   xcode_version: [11, 3, 1]  # xCode version
+#   modules: <modules artifact name>
+#   builder: <cctbx builder>
+
+jobs:
+- job: ${{ format('{0}_{1}', format('macOS_{0}', join('_', parameters.vmImage)), format('xcode_{0}', join('_', parameters.xcode_version)) ) }}
+  pool:
+    vmImage: ${{ format('macOS-{0}', join('.', parameters.vmImage)) }}
+  timeoutInMinutes: 360
+  strategy:
+    maxParallel: 2
+    matrix:
+      python2.7:
+        CONDA: MacOSX
+        OS: osx-64
+        PYTHON_VERSION: py27
+        MODULES: ${{ parameters.modules }}
+      python3.6:
+        CONDA: MacOSX
+        OS: osx-64
+        PYTHON_VERSION: py36
+        MODULES: ${{ parameters.modules }}
+      # python3.7:
+      #   CONDA: MacOSX
+      #   OS: osx-64
+      #   PYTHON_VERSION: py37
+      #   MODULES: ${{ parameters.modules }}
+      # python3.8:
+      #   CONDA: MacOSX
+      #   OS: osx-64
+      #   PYTHON_VERSION: py38
+      #   MODULES: ${{ parameters.modules }}
+
+  variables:
+    artifact_name: ${{ format('xcode_{0}', join('_', parameters.xcode_version))  }}_$(PYTHON_VERSION)
+    day: $(Get-Date -Format dddd)
+
+  steps:
+  - powershell: |
+      Write-Host $(day)
+      Write-Host "##vso[task.setVariable variable=day]$(day)"
+    displayName: Get day of week
+
+  - script: echo $(day)
+    displayName: Check day of week
+
+  - script: |
+      echo "Selecting Xcode version ${{ join('.', parameters.xcode_version) }}"
+      sudo xcode-select --switch /Applications/Xcode_${{ join('.', parameters.xcode_version) }}.app/Contents/Developer
+    displayName: Select Xcode version
+
+  - script: |
+      echo "Removing homebrew from Azure to avoid conflicts."
+      curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh > ~/uninstall_homebrew
+      chmod +x ~/uninstall_homebrew
+      ~/uninstall_homebrew -f -q
+      rm ~/uninstall_homebrew
+    displayName: Remove homebrew
+
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      project: '$(resources.pipeline.build_cache.projectID)'
+      pipeline: '$(resources.pipeline.build_cache.pipelineID)'
+      allowPartiallySucceededBuilds: true
+      allowFailedBuilds: true
+      artifact: '$(artifact_name)'
+      path: $(Pipeline.Workspace)
+    displayName: Download cached build
+
+  - script: |
+      cd $(Pipeline.Workspace)
+      tar -xf build.tar
+      rm build.tar
+    displayName: Extract build tarball
+    continueOnError: true
+    failOnStderr: false
+
+  # test
+  - template: ./unix-conda-build.yml
+    parameters:
+      builder: ${{ parameters.builder }}
