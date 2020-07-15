@@ -246,7 +246,7 @@ jobs:
       call .\build\setpaths.bat
       mkdir tests
       cd tests
-      phenix_regression.run_tests_parallel nproc=4
+      call phenix_regression.run_tests_parallel nproc=4
     condition: or(and(eq(variables['PYTHON_VERSION'], 'py27'),
                       eq('${{ parameters.vs }}', 'vs2015')),
                   ne(variables['PYTHON_VERSION'], 'py27'))
