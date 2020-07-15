@@ -263,13 +263,11 @@ jobs:
       echo on
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
-      dir modules\phenix_regression
       call libtbx.refresh
-      dir build\bin\phenix_regression*
       call mmtbx.rebuild_rotarama_cache
       mkdir tests
       cd tests
-      call phenix_regression.run_tests_parallel nproc=4
+      call phenix_regression.test_all_parallel nproc=4
     condition: or(and(eq(variables['PYTHON_VERSION'], 'py27'),
                       eq('${{ parameters.vs }}', 'vs2015')),
                   ne(variables['PYTHON_VERSION'], 'py27'))
