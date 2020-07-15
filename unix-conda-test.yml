@@ -58,8 +58,14 @@ steps:
     project: '$(resources.pipeline.data_cache.projectID)'
     pipeline: '$(resources.pipeline.data_cache.pipelineID)'
     artifact: 'chem_data'
-    path: $(Pipeline.Workspace)/modules/chem_data
+    path: $(Pipeline.Workspace)/modules
   displayName: Download chem_data
+
+- script: |
+    cd $(Pipeline.Workspace)/modules
+    tar -xf chem_data.tar
+    rm chem_data.tar
+  displayName: Extract chem_data tarball
 
 - task: DownloadPipelineArtifact@2
   inputs:
@@ -67,8 +73,14 @@ steps:
     project: '$(resources.pipeline.data_cache.projectID)'
     pipeline: '$(resources.pipeline.data_cache.pipelineID)'
     artifact: 'phenix_regression'
-    path: $(Pipeline.Workspace)/modules/phenix_regression
+    path: $(Pipeline.Workspace)/modules
   displayName: Download phenix_regression
+
+- script: |
+    cd $(Pipeline.Workspace)/modules
+    tar -xf phenix_regression.tar
+    rm phenix_regression.tar
+  displayName: Extract phenix_regression tarball
 
 - task: DownloadPipelineArtifact@2
   inputs:
@@ -76,8 +88,14 @@ steps:
     project: '$(resources.pipeline.data_cache.projectID)'
     pipeline: '$(resources.pipeline.data_cache.pipelineID)'
     artifact: 'phenix_examples'
-    path: $(Pipeline.Workspace)/modules/phenix_examples
+    path: $(Pipeline.Workspace)/modules
   displayName: Download phenix_examples
+
+- script: |
+    cd $(Pipeline.Workspace)/modules
+    tar -xf phenix_examples.tar
+    rm phenix_examples.tar
+  displayName: Extract phenix_examples tarball
 
 - script: |
     set -x -e

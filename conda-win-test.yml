@@ -178,8 +178,14 @@ jobs:
       project: '$(resources.pipeline.data_cache.projectID)'
       pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'chem_data'
-      path: $(Pipeline.Workspace)/modules/chem_data
+      path: $(Pipeline.Workspace)/modules
     displayName: Download chem_data
+
+  - script: |
+      cd $(Pipeline.Workspace)/modules
+      tar -xf chem_data.tar
+      del chem_data.tar
+    displayName: Extract chem_data tarball
 
   - task: DownloadPipelineArtifact@2
     inputs:
@@ -187,8 +193,14 @@ jobs:
       project: '$(resources.pipeline.data_cache.projectID)'
       pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'phenix_regression'
-      path: $(Pipeline.Workspace)/modules/phenix_regression
+      path: $(Pipeline.Workspace)/modules
     displayName: Download phenix_regression
+
+  - script: |
+      cd $(Pipeline.Workspace)/modules
+      tar -xf phenix_regression.tar
+      del phenix_regression.tar
+    displayName: Extract phenix_regression tarball
 
   - task: DownloadPipelineArtifact@2
     inputs:
@@ -196,8 +208,14 @@ jobs:
       project: '$(resources.pipeline.data_cache.projectID)'
       pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: 'phenix_examples'
-      path: $(Pipeline.Workspace)/modules/phenix_examples
+      path: $(Pipeline.Workspace)/modules
     displayName: Download phenix_examples
+
+  - script: |
+      cd $(Pipeline.Workspace)/modules
+      tar -xf phenix_examples.tar
+      del phenix_examples.tar
+    displayName: Extract phenix_examples tarball
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
