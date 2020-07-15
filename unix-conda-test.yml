@@ -165,6 +165,8 @@ steps:
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
+    ls modules
+    ls modules/phenix_regression
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=4

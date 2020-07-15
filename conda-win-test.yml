@@ -244,6 +244,8 @@ jobs:
   - script: |
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
+      dir modules
+      dir modules\phenix_regression
       mkdir tests
       cd tests
       call phenix_regression.run_tests_parallel nproc=4
