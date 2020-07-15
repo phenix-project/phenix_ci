@@ -49,6 +49,9 @@ jobs:
     day: Sunday
 
   steps:
+  - script: docker info
+    displayName: Get Docker information
+
   - script: |
       day=`date +%A`
       echo $(day)
