@@ -188,7 +188,7 @@ steps:
     mmtbx.rebuild_rotarama_cache
     mkdir tests
     cd tests
-    phenix_regression.test_all_parallel nproc=4
+    phenix_regression.test_all_parallel nproc=2
     df -H
   failOnStderr: false
   displayName: Test
