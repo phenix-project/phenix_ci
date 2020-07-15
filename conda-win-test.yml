@@ -260,9 +260,12 @@ jobs:
 
   # test, libtbx.refresh is needed to build missing dispatchers
   - script: |
+      echo on
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
+      dir modules\phenix_regression
       call libtbx.refresh
+      dir build\bin\phenix_regression*
       call mmtbx.rebuild_rotarama_cache
       mkdir tests
       cd tests
