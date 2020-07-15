@@ -179,6 +179,7 @@ steps:
 # test, libtbx.refresh is needed to build missing dispatchers
 - script: |
     set -x -e
+    df -H
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
@@ -188,6 +189,7 @@ steps:
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=4
+    df -H
   failOnStderr: false
   displayName: Test
 
