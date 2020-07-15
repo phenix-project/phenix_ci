@@ -184,6 +184,7 @@ steps:
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
     libtbx.refresh
+    mmtbx.rebuild_rotarama_cache
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=4

@@ -263,6 +263,7 @@ jobs:
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
       call libtbx.refresh
+      call mmtbx.rebuild_rotarama_cache
       mkdir tests
       cd tests
       call phenix_regression.run_tests_parallel nproc=4
