@@ -258,12 +258,11 @@ jobs:
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
 
-  # test
+  # test, libtbx.refresh is needed to build missing dispatchers
   - script: |
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
-      dir modules
-      dir modules\phenix_regression
+      call libtbx.refresh
       mkdir tests
       cd tests
       call phenix_regression.run_tests_parallel nproc=4

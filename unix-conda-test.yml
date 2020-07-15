@@ -176,15 +176,14 @@ steps:
 #   displayName: Use Boost from cctbx-old-abi channel
 #   condition: or(eq('${{ parameters.version[0] }}', 6), eq('${{ parameters.version[0] }}', 7), eq('${{ parameters.version[0] }}', 14))
 
-# test
+# test, libtbx.refresh is needed to build missing dispatchers
 - script: |
     set -x -e
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
-    ls modules
-    ls modules/phenix_regression
+    libtbx.refresh
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=4
