@@ -49,7 +49,7 @@ jobs:
     day: Sunday
 
   steps:
-  - script: docker info
+  - script: /tmp/docker info
     displayName: Get Docker information
 
   - script: |
