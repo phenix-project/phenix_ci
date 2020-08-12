@@ -1,5 +1,5 @@
 # Script for nightly build of phenix
-
+#
 # no continuous integration builds or pull requests
 trigger: none
 pr: none
