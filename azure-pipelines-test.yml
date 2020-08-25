@@ -11,6 +11,7 @@ resources:
     trigger: true
   - pipeline: build_cache
     source: 'Update build cache'
+    trigger: true
   - pipeline: data_cache
     project: phenix
     source: 'Update modules'
