@@ -252,7 +252,7 @@ jobs:
   - script: |
       echo on
       call %CONDA%\condabin\conda.bat create -y -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)\modules\phenix\conda_envs\phenix_%PYTHON_VERSION%_%OS%.txt
-      call %CONDA%\condabin\conda.bat install -y -c conda-forge -c defaults --no-deps -n $(PYTHON_VERSION) junit-xml
+      call %CONDA%\condabin\conda.bat install -y -c conda-forge -c defaults --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
     displayName: Create conda environment
 
   - powershell: |
