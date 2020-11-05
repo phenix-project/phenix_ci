@@ -159,7 +159,7 @@ steps:
     set -x -e
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
-    conda install -y -c conda-forge --freeze-insatlled --no-deps -n $(PYTHON_VERSION) junit-xml
+    conda install -y -c conda-forge --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
   displayName: Create conda environment
 
 # - script: |
