@@ -228,6 +228,7 @@ jobs:
 
   # create conda environment
   - script: |
+      call %CONDA%\condabin\conda.bat config --set channel_priority flexible
       call %CONDA%\condabin\conda.bat install -y -n base conda=4.8
     displayName: Update conda
 
