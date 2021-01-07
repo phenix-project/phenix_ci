@@ -186,7 +186,10 @@ steps:
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
     libtbx.refresh
+    rm -fr $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.dlite
+    rm -fr $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.dlite
     mmtbx.rebuild_rotarama_cache
+    mmtbx.rebuild_cablam_cache
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=3

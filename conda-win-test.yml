@@ -266,7 +266,12 @@ jobs:
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
       call libtbx.refresh
+      del /s /q .\modules\chem_data\rotarama_data\*.pickle
+      del /s /q .\modules\chem_data\rotarama_data\*.dlite
+      del /s /q .\modules\chem_data\cablam_data\*.pickle
+      del /s /q .\modules\chem_data\cablam_data\*.dlite
       call mmtbx.rebuild_rotarama_cache
+      call mmtbx.rebuild_cablam_cache
       mkdir tests
       cd tests
       call phenix_regression.test_all_parallel nproc=4
