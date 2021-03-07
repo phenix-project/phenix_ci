@@ -15,7 +15,7 @@ jobs:
   - template: ${{ parameters.linux }}
     parameters:
       distribution: centos
-      version: [6]
+      version: [7]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.osx }}
