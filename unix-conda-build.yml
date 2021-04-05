@@ -137,7 +137,7 @@ steps:
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
-    python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4
+    python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4 --config_flags="--enable_cxx11"
   displayName: Configure and Build
 
 # test
