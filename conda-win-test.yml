@@ -19,22 +19,22 @@ jobs:
   strategy:
     maxParallel: 2
     matrix:
-      python2.7:
-        OS: win-64
-        PYTHON_VERSION: py27
-        MODULES: ${{ parameters.modules }}
+      # python2.7:
+      #   OS: win-64
+      #   PYTHON_VERSION: py27
+      #   MODULES: ${{ parameters.modules }}
       # python3.6:
       #   OS: win-64
       #   PYTHON_VERSION: py36
       #   MODULES: ${{ parameters.modules }}
-      # python3.7:
-      #   OS: win-64
-      #   PYTHON_VERSION: py37
-      #   MODULES: ${{ parameters.modules }}
-      python3.8:
+      python3.7:
         OS: win-64
-        PYTHON_VERSION: py38
+        PYTHON_VERSION: py37
         MODULES: ${{ parameters.modules }}
+      # python3.8:
+      #   OS: win-64
+      #   PYTHON_VERSION: py38
+      #   MODULES: ${{ parameters.modules }}
 
   variables:
     artifact_name: ${{ parameters.vs }}_$(PYTHON_VERSION)
@@ -227,10 +227,10 @@ jobs:
     displayName: Copy bootstrap.py
 
   # create conda environment
-  - script: |
-      call %CONDA%\condabin\conda.bat config --set channel_priority flexible
-      call %CONDA%\condabin\conda.bat install -y -n base conda=4.8
-    displayName: Update conda
+  # - script: |
+  #     call %CONDA%\condabin\conda.bat config --set channel_priority flexible
+  #     call %CONDA%\condabin\conda.bat install -y -n base conda=4.8
+  #   displayName: Update conda
 
   # - task: DownloadPipelineArtifact@2
   #   displayName: Download conda packages

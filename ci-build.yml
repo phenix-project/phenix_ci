@@ -9,7 +9,7 @@ jobs:
   - template: ${{ parameters.win }}
     parameters:
       vmImage: vs2017-win2016
-      vs: vs2015
+      vs: vs2017
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.linux }}
