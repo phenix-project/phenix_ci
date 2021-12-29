@@ -42,7 +42,7 @@ steps:
   displayName: Download password
 
 - script: |
-    set -x -e
+    set -xe
     cd $(Pipeline.Workspace)
     openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
     openssl enc -d -aes-256-cbc -in modules.enc -out modules.tar -md sha256 -pass file:./password
@@ -98,7 +98,7 @@ steps:
   displayName: Extract phenix_examples tarball
 
 - script: |
-    set -x -e
+    set -xe
     cd $(Pipeline.Workspace)
     ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
   displayName: Link bootstrap.py
@@ -114,7 +114,7 @@ steps:
   displayName: Download miniconda
 
 - script: |
-    set -x -e
+    set -xe
     bash $(Pipeline.Workspace)/miniconda/Miniconda3-latest-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniconda
   displayName: Install miniconda
 
@@ -144,7 +144,7 @@ steps:
         ne(variables['Build.DefinitionName'], 'Full'))
 
 - script: |
-    set -x -e
+    set -xe
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda install -y conda-build
     cd $(Pipeline.Workspace)/channel
@@ -156,7 +156,7 @@ steps:
   displayName: Build local channel
 
 - script: |
-    set -x -e
+    set -xe
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda config --set channel_priority flexible
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
@@ -164,7 +164,7 @@ steps:
   displayName: Create conda environment
 
 # - script: |
-#     set -x -e
+#     set -xe
 #     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
 #     conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
 #   condition: eq('${{ parameters.version[0] }}', 6)
@@ -179,7 +179,7 @@ steps:
 
 # test, libtbx.refresh is needed to build missing dispatchers
 - script: |
-    set -x -e
+    set -xe
     df -H
     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
