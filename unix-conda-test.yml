@@ -43,6 +43,8 @@ steps:
 
 - script: |
     set -xe
+    conda create -y -n openssl openssl=1.1
+    conda activate openssl
     cd $(Pipeline.Workspace)
     openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
     openssl enc -d -aes-256-cbc -in modules.enc -out modules.tar -md sha256 -pass file:./password

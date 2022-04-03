@@ -20,7 +20,7 @@ jobs:
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.osx }}
     parameters:
-      vmImage: [10, 14]
+      vmImage: [10, 15]
       xcode_version: [11, 3, 1]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
