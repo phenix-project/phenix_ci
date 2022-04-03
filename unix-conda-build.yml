@@ -59,7 +59,7 @@ steps:
 - script: |
     set -xe
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda create -n openssl openssl=1.1
+    conda create -y -n openssl openssl=1.1
     conda activate openssl
     cd $(Pipeline.Workspace)
     openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
