@@ -23,7 +23,7 @@ jobs:
       builder: ${{ parameters.builder }}
   - template: ./conda-linux.yml
     parameters:
-      distribution: centos
+      distribution: rockylinux
       version: [8]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
