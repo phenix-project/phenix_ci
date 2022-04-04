@@ -9,12 +9,12 @@ jobs:
       vs: vs2019
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
-  - template: ./conda-linux.yml
-    parameters:
-      distribution: centos
-      version: [6]
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
+  # - template: ./conda-linux.yml
+  #   parameters:
+  #     distribution: centos
+  #     version: [6]
+  #     modules: ${{ parameters.modules }}
+  #     builder: ${{ parameters.builder }}
   - template: ./conda-linux.yml
     parameters:
       distribution: centos
