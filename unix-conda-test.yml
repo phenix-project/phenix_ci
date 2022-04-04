@@ -23,6 +23,21 @@ steps:
     secureFile: 'file_key'
   displayName: Download private key
 
+# install miniforge
+- task: DownloadPipelineArtifact@2
+  inputs:
+    source: 'specific'
+    project: '$(resources.pipeline.cctbx_data_cache.projectID)'
+    pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
+    artifact: 'miniforge'
+    path: $(Pipeline.Workspace)/miniforge
+  displayName: Download miniforge
+
+- script: |
+    set -xe
+    bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
+  displayName: Install miniforge
+
 - task: DownloadPipelineArtifact@2
   inputs:
     source: 'specific'
@@ -43,6 +58,7 @@ steps:
 
 - script: |
     set -xe
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda create -y -n openssl openssl=1.1
     conda activate openssl
     cd $(Pipeline.Workspace)
@@ -105,21 +121,6 @@ steps:
     ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
   displayName: Link bootstrap.py
 
-# install miniconda
-- task: DownloadPipelineArtifact@2
-  inputs:
-    source: 'specific'
-    project: '$(resources.pipeline.cctbx_data_cache.projectID)'
-    pipeline: '$(resources.pipeline.cctbx_data_cache.pipelineID)'
-    artifact: 'miniconda'
-    path: $(Pipeline.Workspace)/miniconda
-  displayName: Download miniconda
-
-- script: |
-    set -xe
-    bash $(Pipeline.Workspace)/miniconda/Miniconda3-latest-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniconda
-  displayName: Install miniconda
-
 # create conda environment
 # fresh downloads for "Update build cache" and "Full" pipelines
 - task: DownloadPipelineArtifact@2
@@ -147,7 +148,7 @@ steps:
 
 - script: |
     set -xe
-    source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda install -y conda-build
     cd $(Pipeline.Workspace)/channel
     conda index .
@@ -159,7 +160,7 @@ steps:
 
 - script: |
     set -xe
-    source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda config --set channel_priority flexible
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
     conda install -y -c conda-forge -c defaults --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
@@ -167,13 +168,13 @@ steps:
 
 # - script: |
 #     set -xe
-#     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 #     conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
 #   condition: eq('${{ parameters.version[0] }}', 6)
 #   displayName: Remove OpenMP headers from conda environment
 
 # - script: |
-#     source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
 #     conda remove -y --force -n $(PYTHON_VERSION) boost boost-cpp
 #     conda install -y --no-deps -c cctbx-old-abi -n $(PYTHON_VERSION) boost boost-cpp
 #   displayName: Use Boost from cctbx-old-abi channel
@@ -183,7 +184,7 @@ steps:
 - script: |
     set -xe
     df -H
-    source $(Pipeline.Workspace)/miniconda/etc/profile.d/conda.sh
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
