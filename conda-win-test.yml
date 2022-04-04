@@ -160,7 +160,14 @@ jobs:
       echo on
       cd $(Pipeline.Workspace)
       openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
-      openssl enc -d -aes-256-cbc -in modules.enc -out modules.tar -md sha256 -pass file:.\password
+      openssl enc -d ^
+        -aes-256-cbc ^
+        -md sha256 ^
+        -iter 100000 ^
+        -pbkdf2 ^
+        -in modules.enc ^
+        -out modules.tar ^
+        -pass file:.\password
       del modules.enc
       tar -xf modules.tar
       del modules.tar
