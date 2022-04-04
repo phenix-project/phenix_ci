@@ -187,7 +187,24 @@ steps:
 #   displayName: Use Boost from cctbx-old-abi channel
 #   condition: or(eq('${{ parameters.version[0] }}', 6), eq('${{ parameters.version[0] }}', 7), eq('${{ parameters.version[0] }}', 14))
 
-# test, libtbx.refresh is needed to build missing dispatchers
+# build
+# rebuild missing dispatchers
+# fix cache for macOS
+# rebuild caches
+- script: |
+    set -xe
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda activate $(PYTHON_VERSION)
+    cd $(Pipeline.Workspace)
+    python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4
+    source ./build/setpaths.sh
+    rm -fr $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.dlite
+    rm -fr $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.dlite
+    mmtbx.rebuild_rotarama_cache
+    mmtbx.rebuild_cablam_cache
+  displayName: Configure and Build
+
+# test
 - script: |
     set -xe
     df -H
@@ -195,11 +212,6 @@ steps:
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
-    libtbx.refresh
-    rm -fr $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/rotarama_data/*.dlite
-    rm -fr $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.pickle $(Pipeline.Workspace)/modules/chem_data/cablam_data/*.dlite
-    mmtbx.rebuild_rotarama_cache
-    mmtbx.rebuild_cablam_cache
     mkdir tests
     cd tests
     phenix_regression.test_all_parallel nproc=3
