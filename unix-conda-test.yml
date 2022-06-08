@@ -214,6 +214,8 @@ steps:
     source ./build/setpaths.sh
     mkdir tests
     cd tests
+    export PYTHONDEVMODE=1
+    export PYTHONTRACEMALLOC=1
     phenix_regression.test_all_parallel nproc=3
     df -H
   failOnStderr: false
