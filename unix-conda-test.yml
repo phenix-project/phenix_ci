@@ -36,7 +36,9 @@ steps:
 - script: |
     set -xe
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
-  displayName: Install miniforge
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda install -n base -y mamba
+  displayName: Install miniforge and mamba
 
 - task: DownloadPipelineArtifact@2
   inputs:
@@ -169,8 +171,8 @@ steps:
     set -xe
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda config --set channel_priority flexible
-    conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
-    conda install -y -c conda-forge -c defaults --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
+    mamba create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
+    mamba install -y -c conda-forge --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
   displayName: Create conda environment
 
 # - script: |
