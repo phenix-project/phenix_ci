@@ -172,7 +172,8 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda config --set channel_priority flexible
     mamba create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
-    mamba install -y -c conda-forge --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
+    conda activate $(PYTHON_VERSION)
+    pip install junit-xml
   displayName: Create conda environment
 
 # - script: |

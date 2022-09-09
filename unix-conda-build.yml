@@ -124,7 +124,6 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda config --set channel_priority flexible
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
-    conda install -y -c conda-forge -c defaults --freeze-installed --no-deps -n $(PYTHON_VERSION) junit-xml
   displayName: Create conda environment
 
 # - script: |
