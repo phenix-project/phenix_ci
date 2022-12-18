@@ -83,6 +83,7 @@ jobs:
       done
       ls
     displayName: Download conda packages
+    retryCountOnTaskFailure: 3
 
   - publish: $(Pipeline.Workspace)/$(PYTHON_VERSION)_$(OS)
     artifact: $(PYTHON_VERSION)_$(OS)
