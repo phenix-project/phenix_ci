@@ -9,7 +9,7 @@ jobs:
   - template: ${{ parameters.win }}
     parameters:
       vmImage: windows-2019
-      vs: vs2019
+      vs: 2019
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.linux }}
