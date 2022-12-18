@@ -6,7 +6,13 @@ jobs:
   - template: ./conda-win.yml
     parameters:
       vmImage: windows-2019
-      vs: vs2019
+      vs: 2019
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-win.yml
+    parameters:
+      vmImage: windows-2022
+      vs: 2022
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   # - template: ./conda-linux.yml
@@ -48,7 +54,7 @@ jobs:
   - template: ./conda-osx.yml
     parameters:
       vmImage: [12]
-      xcode_version: [14, 0]
+      xcode_version: [14, 1]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ./conda-osx.yml

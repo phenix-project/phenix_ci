@@ -12,7 +12,7 @@
 #   modules: <modules artifact name>
 
 jobs:
-- job: ${{ parameters.vs }}
+- job: vs${{ parameters.vs }}
   pool:
     vmImage: ${{ parameters.vmImage }}
   timeoutInMinutes: 360
@@ -33,7 +33,7 @@ jobs:
         MODULES: ${{ parameters.modules }}
 
   variables:
-    artifact_name: ${{ parameters.vs }}_$(PYTHON_VERSION)
+    artifact_name: vs${{ parameters.vs }}_$(PYTHON_VERSION)
     day: $(Get-Date -Format dddd)
     temp: "C:\\Miniconda3\\envs\\temp\\working"
 
@@ -49,44 +49,6 @@ jobs:
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
-
-  # install compilers
-  - script: |
-      choco install vcpython27 -fdv -y --debug
-    condition: and(eq(variables['PYTHON_VERSION'], 'py27'),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Install vcpython27.msi
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-
-      $batchcontent = @"
-      ECHO ON
-      SET vcpython=C:\Program Files (x86)\Common Files\Microsoft\Visual C++ for Python\9.0
-
-      DIR "%vcpython%"
-
-      CALL "%vcpython%\vcvarsall.bat" %*
-      "@
-
-      $batchDir = "C:\Program Files (x86)\Common Files\Microsoft\Visual C++ for Python\9.0\VC"
-      $batchPath = "$batchDir" + "\vcvarsall.bat"
-      New-Item -Path $batchPath -ItemType "file" -Force
-
-      Set-Content -Value $batchcontent -Path $batchPath
-
-      Get-ChildItem -Path $batchDir
-
-      Get-ChildItem -Path ($batchDir + '\..')
-    condition: and(eq(variables['PYTHON_VERSION'], 'py27'),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Patch vs2008
-
-  - script: |
-      choco install microsoft-visual-cpp-build-tools
-    condition: and(not(eq(variables['PYTHON_VERSION'], 'py27')),
-                       eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Install Visual C++ Build Tools 2015
 
   # download components
   - checkout: none
@@ -104,11 +66,12 @@ jobs:
       path: $(Pipeline.Workspace)
     displayName: Download cached build
     condition: >
-      and(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-              eq(variables['day'], 'Sunday')),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 ne(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
 
   - task: DownloadPipelineArtifact@2
@@ -127,9 +90,7 @@ jobs:
              eq(variables['Build.DefinitionName'], 'CI'),
              eq(variables['Build.DefinitionName'], 'CI branch'),
              eq(variables['Build.DefinitionName'], 'Full')),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
 
   - script: |
@@ -138,9 +99,12 @@ jobs:
       del build.tar
     displayName: Extract build tarball
     condition: >
-      or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-             eq('${{ parameters.vs }}', 'vs2015')),
-         ne(variables['PYTHON_VERSION'], 'py27'))
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 ne(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
     failOnStderr: false
 
@@ -235,39 +199,15 @@ jobs:
 
   - script: |
       cd $(Pipeline.Workspace)
-      call "C:\Program Files (x86)\Common Files\Microsoft\Visual C++ for Python\9.0\vcvarsall.bat" amd64
+      if exist "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
+        call "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+      )
+      if exist "C:\Program Files\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
+        call "C:\Program Files\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+      )
       call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
       python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
-    condition: and(eq(variables['PYTHON_VERSION'], 'py27'),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Configure and Build (Python 2)
-
-  - script: |
-      cd $(Pipeline.Workspace)
-      call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat"
-      call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
-      python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
-    condition: and(not(eq(variables['PYTHON_VERSION'], 'py27')),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Configure and Build (Python 3, vs2015)
-
-  - script: |
-      cd $(Pipeline.Workspace)
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-      call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
-      python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
-    condition: and(not(eq(variables['PYTHON_VERSION'], 'py27')),
-                   eq('${{ parameters.vs }}', 'vs2017'))
-    displayName: Configure and Build (Python 3, vs2017)
-
-  - script: |
-      cd $(Pipeline.Workspace)
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-      call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
-      python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
-    condition: and(not(eq(variables['PYTHON_VERSION'], 'py27')),
-                  eq('${{ parameters.vs }}', 'vs2019'))
-    displayName: Configure and Build (Python 3, vs2019)
+    displayName: Configure and Build
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
@@ -300,20 +240,20 @@ jobs:
       tar -chzf build.tar build
     displayName: Build tarball
     condition: >
-      and(eq(variables['System.StageAttempt'], 1),
-          eq('${{ parameters.modules }}', 'modules'),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
+      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+          or(eq(variables['Build.Reason'], 'Schedule'),
+             eq(variables['Build.Reason'], 'Manual')),
+          eq(variables['System.StageAttempt'], 1),
+          eq('${{ parameters.modules }}', 'modules'))
     continueOnError: true
 
   # cache build directory every week for regular optimization build
   - publish: $(Pipeline.Workspace)/build.tar
     artifact: $(artifact_name)
     condition: >
-      and(eq(variables['System.StageAttempt'], 1),
-          eq('${{ parameters.modules }}', 'modules'),
-          or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                 eq('${{ parameters.vs }}', 'vs2015')),
-             ne(variables['PYTHON_VERSION'], 'py27')))
+      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+          or(eq(variables['Build.Reason'], 'Schedule'),
+             eq(variables['Build.Reason'], 'Manual')),
+          eq(variables['System.StageAttempt'], 1),
+          eq('${{ parameters.modules }}', 'modules'))
     continueOnError: true
