@@ -67,9 +67,9 @@ jobs:
     displayName: Download cached build
     condition: >
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-                 ne(variables['day'], 'Sunday')),
+                 eq(variables['day'], 'Sunday')),
              eq(variables['Build.DefinitionName'], 'CI'),
-             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
              eq(variables['Build.DefinitionName'], 'Full')),
           ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
@@ -88,7 +88,7 @@ jobs:
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
                  ne(variables['day'], 'Sunday')),
              eq(variables['Build.DefinitionName'], 'CI'),
-             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
              eq(variables['Build.DefinitionName'], 'Full')),
           ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
@@ -102,7 +102,7 @@ jobs:
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
                  ne(variables['day'], 'Sunday')),
              eq(variables['Build.DefinitionName'], 'CI'),
-             eq(variables['Build.DefinitionName'], 'CI branch'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
              eq(variables['Build.DefinitionName'], 'Full')),
           ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true

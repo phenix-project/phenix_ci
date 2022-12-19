@@ -144,8 +144,12 @@ jobs:
       path: $(Pipeline.Workspace)
     displayName: Download cached build
     condition: >
-      and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-          eq(variables['day'], 'Sunday'))
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 eq(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
 
   - task: DownloadPipelineArtifact@2
@@ -159,11 +163,12 @@ jobs:
       path: $(Pipeline.Workspace)
     displayName: Download cached build
     condition: >
-      or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
-             ne(variables['day'], 'Sunday')),
-         eq(variables['Build.DefinitionName'], 'CI'),
-         eq(variables['Build.DefinitionName'], 'CI branch'),
-         eq(variables['Build.DefinitionName'], 'Full'))
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 ne(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
 
   - script: |
@@ -171,6 +176,13 @@ jobs:
       tar -xf build.tar
       rm build.tar
     displayName: Extract build tarball
+    condition: >
+      and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
+                 eq(variables['day'], 'Sunday')),
+             eq(variables['Build.DefinitionName'], 'CI'),
+             eq(variables['Build.DefinitionName'], 'CI test'),
+             eq(variables['Build.DefinitionName'], 'Full')),
+          ne(variables['SKIP_CACHED_BUILD'], 'true'))
     continueOnError: true
     failOnStderr: false
 
