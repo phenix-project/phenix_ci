@@ -38,7 +38,7 @@ jobs:
   # select Boost version
   - script: |
       set -xe
-      cd cd $(Pipeline.Workspace)/modules/boost
+      cd $(Pipeline.Workspace)/modules/boost
       git checkout 1.74
     displayName: Select Boost 1.74
 
