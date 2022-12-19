@@ -13,7 +13,7 @@ schedules:
     - master
   always: true
 
-# resources:
+resources:
   repositories:
   - repository: phenix
     type: github
