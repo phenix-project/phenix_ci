@@ -15,6 +15,10 @@ schedules:
 
 resources:
   repositories:
+  - repository: cctbx_project
+    type: github
+    name: cctbx/cctbx_project
+    endpoint: phenix-project
   - repository: phenix
     type: github
     name: phenix-project/phenix
@@ -33,10 +37,10 @@ resources:
     source: 'Update build cache'
 
 stages:
-# - stage: Preparation
-#   displayName: Download
-#   jobs:
-#     - template: ../download-conda.yml
+- stage: Preparation
+  displayName: Download
+  jobs:
+    - template: ./download-source.yml
 
 - stage: Build
   displayName: Build and test

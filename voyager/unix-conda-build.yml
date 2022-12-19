@@ -16,13 +16,6 @@ steps:
 # download components
 - checkout: none
 
-# download public key
-- task: DownloadSecureFile@1
-  name: private_key
-  inputs:
-    secureFile: 'file_key'
-  displayName: Download private key
-
 # install miniforge
 - task: DownloadPipelineArtifact@2
   inputs:
@@ -39,41 +32,16 @@ steps:
   displayName: Install miniforge
 
 - task: DownloadPipelineArtifact@2
+  displayName: Download modules tarball
   inputs:
-    source: 'specific'
-    project: '$(resources.pipeline.data_cache.projectID)'
-    pipeline: '$(resources.pipeline.data_cache.pipelineID)'
+    source: 'current'
     artifact: $(MODULES)
     path: $(Pipeline.Workspace)
-  displayName: Download modules tarball
-
-- task: DownloadPipelineArtifact@2
-  inputs:
-    source: 'specific'
-    project: '$(resources.pipeline.data_cache.projectID)'
-    pipeline: '$(resources.pipeline.data_cache.pipelineID)'
-    artifact: password
-    path: $(Pipeline.Workspace)
-  displayName: Download password
 
 - script: |
-    set -xe
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda create -y -n openssl openssl=1.1
-    conda activate openssl
     cd $(Pipeline.Workspace)
-    openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
-    openssl enc -d \
-      -aes-256-cbc \
-      -md sha256 \
-      -iter 100000 \
-      -pbkdf2 \
-      -in modules.enc \
-      -out modules.tar \
-      -pass file:./password
-    rm modules.enc
     tar -xf modules.tar
-    rm modules.tar
+    del modules.tar
   displayName: Extract modules tarball
 
 - script: |
