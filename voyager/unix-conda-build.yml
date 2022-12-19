@@ -158,7 +158,10 @@ steps:
     source ./build/setpaths.sh
     export PYTHONDEVMODE=1
     export PYTHONTRACEMALLOC=1
-    python bootstrap.py tests --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4 --verbose
+    libtbx.run_test_parallel \
+      module=voyager_regression \
+      verbosity=2 \
+      nproc=4
   failOnStderr: false
   displayName: Test
 
