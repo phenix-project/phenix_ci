@@ -1,0 +1,71 @@
+# Common Parameters:
+#   modules: <modules artifact name>
+#   pipeline: <pipeline name>
+
+jobs:
+  - template: ./conda-win.yml
+    parameters:
+      vmImage: windows-2019
+      vs: 2019
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-win.yml
+    parameters:
+      vmImage: windows-2022
+      vs: 2022
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  # - template: ./conda-linux.yml
+  #   parameters:
+  #     distribution: centos
+  #     version: [6]
+  #     modules: ${{ parameters.modules }}
+  #     builder: ${{ parameters.builder }}
+  - template: ./conda-linux.yml
+    parameters:
+      distribution: centos
+      version: [7]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-linux.yml
+    parameters:
+      distribution: rockylinux
+      version: [8]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-linux.yml
+    parameters:
+      distribution: ubuntu
+      version: ['18', '04']
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-linux.yml
+    parameters:
+      distribution: ubuntu
+      version: ['16', '04']
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-linux.yml
+    parameters:
+      distribution: ubuntu
+      version: ['20', '04']
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-osx.yml
+    parameters:
+      vmImage: [12]
+      xcode_version: [14, 1]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-osx.yml
+    parameters:
+      vmImage: [12]
+      xcode_version: [13, 4, 1]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-osx.yml
+    parameters:
+      vmImage: [11]
+      xcode_version: [12, 5, 1]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}

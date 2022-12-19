@@ -14,23 +14,23 @@ schedules:
   always: true
 
 # resources:
-#   repositories:
-#   - repository: phenix
-#     type: github
-#     name: phenix-project/phenix
-#     endpoint: phenix-project
-#   pipelines:
-#   - pipeline: build_cache
-#     source: 'Update build cache'
-#   - pipeline: data_cache
-#     project: phenix
-#     source: 'Update modules'
-#   - pipeline: cctbx_data_cache
-#     project: cctbx_project
-#     source: 'Update data cache'
-#   - pipeline: cctbx_build_cache
-#     project: cctbx_project
-#     source: 'Update build cache'
+  repositories:
+  - repository: phenix
+    type: github
+    name: phenix-project/phenix
+    endpoint: phenix-project
+  pipelines:
+  - pipeline: build_cache
+    source: 'Update build cache'
+  - pipeline: data_cache
+    project: phenix
+    source: 'Update modules'
+  - pipeline: cctbx_data_cache
+    project: cctbx_project
+    source: 'Update data cache'
+  - pipeline: cctbx_build_cache
+    project: cctbx_project
+    source: 'Update build cache'
 
 stages:
 # - stage: Preparation
@@ -41,7 +41,7 @@ stages:
 - stage: Build
   displayName: Build and test
   jobs:
-    - template: ../full-build.yml
+    - template: ./full-build.yml
       parameters:
         modules: modules
         builder: voyager
