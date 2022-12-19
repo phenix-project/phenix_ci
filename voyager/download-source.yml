@@ -23,18 +23,28 @@ jobs:
     path: ./modules/cctbx_project
 
   - script: |
+      set -xe
       cd $(Pipeline.Workspace)
       ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
     displayName: Link bootstrap.py
 
   - script: |
+      set -xe
       cd $(Pipeline.Workspace)
       export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
       python bootstrap.py hot update --builder=voyager --python=39 ${{ parameters.flags }}
     displayName: Download sources
 
+  # select Boost version
+  - script: |
+      set -xe
+      cd cd $(Pipeline.Workspace)/modules/boost
+      git checkout 1.74
+    displayName: Select Boost 1.74
+
   # change optimization level (linux, macOS)
   - script: |
+      set -xe
       cd $(Pipeline.Workspace)/modules/cctbx_project/libtbx
       # Remove -ffast-math
       sed -i 's/-ffast-math//g' SConscript
@@ -45,6 +55,7 @@ jobs:
 
   # change optimization level (Windows)
   - script: |
+      set -xe
       cd $(Pipeline.Workspace)/modules/cctbx_project/libtbx
       # Remove /fp:fast
       sed -i 's/\/fp:fast//g' SConscript
@@ -55,6 +66,7 @@ jobs:
 
   # preserve permissions
   - script: |
+      set -xe
       cd $(Pipeline.Workspace)
       tar -chf modules.tar modules
     displayName: Build tarball

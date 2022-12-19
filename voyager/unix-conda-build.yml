@@ -39,9 +39,10 @@ steps:
     path: $(Pipeline.Workspace)
 
 - script: |
+    set -xe
     cd $(Pipeline.Workspace)
     tar -xf modules.tar
-    del modules.tar
+    rm -f modules.tar
   displayName: Extract modules tarball
 
 - script: |
