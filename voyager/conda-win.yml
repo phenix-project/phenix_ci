@@ -238,6 +238,9 @@ jobs:
   # test
   - script: |
       cd $(Pipeline.Workspace)
+      rmdir /S /Q tests
+      mkdir tests
+      cd tests
       call .\build\setpaths.bat
       set PYTHONDEVMODE=1
       set PYTHONTRACEMALLOC=1
@@ -252,7 +255,7 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: '$(Pipeline.Workspace)\tests\voyager_regression\output.xml'
+      testResultsFiles: '$(Pipeline.Workspace)\tests\output.xml'
 
   # preserve permissions
   # delete modules directory to free space for tarball
