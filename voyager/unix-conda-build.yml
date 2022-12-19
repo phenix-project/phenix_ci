@@ -86,6 +86,7 @@ steps:
       echo file://$(Pipeline.Workspace)/channel/${filename} >> env.txt
     done
   displayName: Build local channel
+  retryCountOnTaskFailure: 3
 
 - script: |
     set -xe
@@ -116,6 +117,7 @@ steps:
     cd $(Pipeline.Workspace)
     python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4
   displayName: Configure and Build
+  retryCountOnTaskFailure: 3
 
 # test
 - script: |

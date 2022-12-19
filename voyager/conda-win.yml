@@ -170,6 +170,7 @@ jobs:
       more env.txt
       dir
     displayName: Build local channel
+    retryCountOnTaskFailure: 3
 
   # call %CONDA%\condabin\conda.bat create -y -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)\modules\cctbx_project\libtbx\auto_build\conda_envs\cctbx_%PYTHON_VERSION%_%OS%.txt
   - script: |
@@ -180,7 +181,6 @@ jobs:
       call %CONDA%\condabin\conda.bat install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml pytest=7.0
       if %errorlevel% neq 0 exit /b %errorlevel%
     displayName: Create conda environment
-    retryCountOnTaskFailure: 3
 
   - script: |
       rmdir /S /Q $(Pipeline.Workspace)\channel
@@ -201,6 +201,7 @@ jobs:
       call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
       python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
     displayName: Configure and Build
+    retryCountOnTaskFailure: 3
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
