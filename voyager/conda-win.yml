@@ -239,6 +239,8 @@ jobs:
   - script: |
       cd $(Pipeline.Workspace)
       call .\build\setpaths.bat
+      set PYTHONDEVMODE=1
+      set PYTHONTRACEMALLOC=1
       python bootstrap.py tests --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4 --verbose
     failOnStderr: false
     displayName: Test
@@ -247,7 +249,7 @@ jobs:
     condition: succeededOrFailed()
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: '$(Pipeline.Workspace)\tests\output.xml'
+      testResultsFiles: '$(Pipeline.Workspace)\tests\voyager_regression\output.xml'
 
   # preserve permissions
   # delete modules directory to free space for tarball

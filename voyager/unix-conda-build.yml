@@ -156,6 +156,8 @@ steps:
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
     source ./build/setpaths.sh
+    export PYTHONDEVMODE=1
+    export PYTHONTRACEMALLOC=1
     python bootstrap.py tests --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4 --verbose
   failOnStderr: false
   displayName: Test
@@ -164,4 +166,4 @@ steps:
   condition: succeededOrFailed()
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '$(Pipeline.Workspace)/tests/output.xml'
+    testResultsFiles: '$(Pipeline.Workspace)/tests/voyager_regression/output.xml'
