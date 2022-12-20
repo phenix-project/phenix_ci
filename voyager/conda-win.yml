@@ -216,7 +216,7 @@ jobs:
       call .\build\setpaths.bat
       set PYTHONDEVMODE=1
       set PYTHONTRACEMALLOC=1
-      libtbx.run_test_parallel ^
+      libtbx.run_tests_parallel ^
         module=voyager_regression ^
         verbosity=2 ^
         nproc=4
