@@ -210,10 +210,10 @@ jobs:
   # test
   - script: |
       cd $(Pipeline.Workspace)
+      call .\build\setpaths.bat
       rmdir /S /Q tests
       mkdir tests
       cd tests
-      call .\build\setpaths.bat
       set PYTHONDEVMODE=1
       set PYTHONTRACEMALLOC=1
       libtbx.run_tests_parallel ^

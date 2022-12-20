@@ -126,10 +126,10 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
+    source ./build/setpaths.sh
     rm -fr tests
     mkdir tests
     cd tests
-    source ./build/setpaths.sh
     export PYTHONDEVMODE=1
     export PYTHONTRACEMALLOC=1
     libtbx.run_tests_parallel \
