@@ -78,6 +78,15 @@ steps:
 
 - script: |
     set -xe
+    cd $(Pipeline.Workspace)/modules
+    wget "https://github.com/SCons/scons/archive/3.1.1.zip"
+    unzip 3.1.1.zip
+    mv scons-3.1.1 scons
+  displayName: Download SCons for Python 2
+  condition: eq(variables['PYTHON_VERSION'], 'py27')
+
+- script: |
+    set -xe
     cd $(Pipeline.Workspace)
     ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
   displayName: Link bootstrap.py
