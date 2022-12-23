@@ -84,6 +84,7 @@ steps:
       curl -fsSL ${SCONS_URL} > 3.1.1.zip
     else
       wget ${SCONS_URL}
+    fi
     unzip 3.1.1.zip
     mv scons-3.1.1 scons
   displayName: Download SCons for Python 2
