@@ -81,7 +81,7 @@ jobs:
   - script: |
       set -xe
       sudo yum groupinstall -y 'Development Tools'
-      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh unzip wget
+      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh wget
       locale -a
     displayName: Install dependencies for CentOS
     condition: or(eq('${{ parameters.distribution }}', 'centos'),
@@ -111,7 +111,7 @@ jobs:
     condition: eq('${{ parameters.distribution }}', 'ubuntu')
 
   - script: |
-      sudo apt-get install -y build-essential curl git libgl1-mesa-dev libglu1-mesa-dev locales subversion tcsh wget
+      sudo apt-get install -y build-essential curl git libgl1-mesa-dev libglu1-mesa-dev locales subversion tcsh unzip wget
       sudo locale-gen en_US.UTF-8
       sudo update-locale
     displayName: Install dependencies for Ubuntu
