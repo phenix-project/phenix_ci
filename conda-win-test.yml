@@ -12,7 +12,7 @@
 #   modules: <modules artifact name>
 
 jobs:
-- job: ${{ parameters.vs }}
+- job: vs${{ parameters.vs }}
   pool:
     vmImage: ${{ parameters.vmImage }}
   timeoutInMinutes: 360
@@ -41,7 +41,7 @@ jobs:
       #   MODULES: ${{ parameters.modules }}
 
   variables:
-    artifact_name: ${{ parameters.vs }}_$(PYTHON_VERSION)
+    artifact_name: vs${{ parameters.vs }}_$(PYTHON_VERSION)
     day: $(Get-Date -Format dddd)
     temp: "C:\\Miniconda3\\envs\\temp\\working"
 
@@ -57,44 +57,6 @@ jobs:
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
-
-  # install compilers
-  - script: |
-      choco install vcpython27 -fdv -y --debug
-    condition: and(eq(variables['PYTHON_VERSION'], 'py27'),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Install vcpython27.msi
-
-  - powershell: |
-      Set-PSDebug -Trace 1
-
-      $batchcontent = @"
-      ECHO ON
-      SET vcpython=C:\Program Files (x86)\Common Files\Microsoft\Visual C++ for Python\9.0
-
-      DIR "%vcpython%"
-
-      CALL "%vcpython%\vcvarsall.bat" %*
-      "@
-
-      $batchDir = "C:\Program Files (x86)\Common Files\Microsoft\Visual C++ for Python\9.0\VC"
-      $batchPath = "$batchDir" + "\vcvarsall.bat"
-      New-Item -Path $batchPath -ItemType "file" -Force
-
-      Set-Content -Value $batchcontent -Path $batchPath
-
-      Get-ChildItem -Path $batchDir
-
-      Get-ChildItem -Path ($batchDir + '\..')
-    condition: and(eq(variables['PYTHON_VERSION'], 'py27'),
-                   eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Patch vs2008
-
-  - script: |
-      choco install microsoft-visual-cpp-build-tools
-    condition: and(not(eq(variables['PYTHON_VERSION'], 'py27')),
-                       eq('${{ parameters.vs }}', 'vs2015'))
-    displayName: Install Visual C++ Build Tools 2015
 
   # download components
   - checkout: none
@@ -115,10 +77,6 @@ jobs:
       tar -xf build.tar
       del build.tar
     displayName: Extract build tarball
-    condition: >
-      or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-             eq('${{ parameters.vs }}', 'vs2015')),
-         ne(variables['PYTHON_VERSION'], 'py27'))
     continueOnError: true
     failOnStderr: false
 
@@ -286,9 +244,6 @@ jobs:
       mkdir tests
       cd tests
       call phenix_regression.test_all_parallel nproc=4
-    condition: or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-                      eq('${{ parameters.vs }}', 'vs2015')),
-                  ne(variables['PYTHON_VERSION'], 'py27'))
     failOnStderr: false
     displayName: Test
 
