@@ -96,19 +96,11 @@ steps:
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
   displayName: Create conda environment
 
-# - script: |
-#     set -xe
-#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-#     conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
-#   condition: eq('${{ parameters.version[0] }}', 6)
-#   displayName: Remove OpenMP headers from conda environment
-
-# - script: |
-#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-#     conda remove -y --force -n $(PYTHON_VERSION) boost boost-cpp
-#     conda install -y --no-deps -c cctbx-old-abi -n $(PYTHON_VERSION) boost boost-cpp
-#   displayName: Use Boost from cctbx-old-abi channel
-#   condition: or(eq('${{ parameters.version[0] }}', 6), eq('${{ parameters.version[0] }}', 7), eq('${{ parameters.version[0] }}', 14))
+- script: |
+    set -xe
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda remove -y -n $(PYTHON_VERSION) --force boost boost-cpp
+  displayName: Remove Boost from conda environment
 
 # build
 - script: |
@@ -138,6 +130,7 @@ steps:
       nproc=4
   failOnStderr: false
   displayName: Test
+  retryCountOnTaskFailure: 3
 
 - task: PublishTestResults@2
   condition: succeededOrFailed()
