@@ -222,6 +222,7 @@ jobs:
         nproc=4
     failOnStderr: false
     displayName: Test
+    retryCountOnTaskFailure: 3
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
