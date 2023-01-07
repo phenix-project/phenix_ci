@@ -26,6 +26,9 @@ jobs:
       linux_py39:
         OS: linux-64
         PYTHON_VERSION: py39
+      linux_py310:
+        OS: linux-64
+        PYTHON_VERSION: py310
       macos_py27:
         OS: osx-64
         PYTHON_VERSION: py27
@@ -38,6 +41,9 @@ jobs:
       macos_py39:
         OS: osx-64
         PYTHON_VERSION: py39
+      macos_py310:
+        OS: osx-64
+        PYTHON_VERSION: py310
       win_py37:
         OS: win-64
         PYTHON_VERSION: py37
@@ -47,6 +53,9 @@ jobs:
       win_py39:
         OS: win-64
         PYTHON_VERSION: py39
+      win_py310:
+        OS: win-64
+        PYTHON_VERSION: py310
 
   steps:
   - task: InstallSSHKey@0
@@ -73,7 +82,7 @@ jobs:
         mkdir -p ${directory}
         cd ${directory}
         echo Downloading ${filename} to ${directory}
-        wget --retry-connrefused --retry-on-http-error=520 ${url}
+        wget --no-clobber --retry-connrefused --no-http-keep-alive --retry-on-http-error=500,502,503,520,524,525 ${url}
         cd ..
         if [ "$(OS)" = "win-64" ]; then
           echo ${directory}\\${filename} >> filenames.txt
