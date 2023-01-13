@@ -31,6 +31,10 @@ jobs:
         OS: win-64
         PYTHON_VERSION: py39
         MODULES: ${{ parameters.modules }}
+      python3.10:
+        OS: win-64
+        PYTHON_VERSION: py310
+        MODULES: ${{ parameters.modules }}
 
   variables:
     artifact_name: vs${{ parameters.vs }}_$(PYTHON_VERSION)

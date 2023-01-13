@@ -35,6 +35,11 @@ jobs:
         OS: osx-64
         PYTHON_VERSION: py39
         MODULES: ${{ parameters.modules }}
+      python3.10:
+        CONDA: MacOSX
+        OS: osx-64
+        PYTHON_VERSION: py310
+        MODULES: ${{ parameters.modules }}
 
   variables:
     artifact_name: ${{ format('xcode_{0}', join('_', parameters.xcode_version))  }}_$(PYTHON_VERSION)
