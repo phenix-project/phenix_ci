@@ -92,6 +92,14 @@ steps:
 
 - script: |
     set -xe
+    cd $(Pipeline.Workspace)/modules
+    rm -fr dxtbx
+    git clone -b dials-2.2 https://github.com/dials/dxtbx.git
+  displayName: Download dials-2.2 version of dxtbx for Python 2
+  condition: eq(variables['PYTHON_VERSION'], 'py27')
+
+- script: |
+    set -xe
     cd $(Pipeline.Workspace)
     ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
   displayName: Link bootstrap.py
