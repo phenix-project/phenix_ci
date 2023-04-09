@@ -124,8 +124,10 @@ jobs:
     failOnStderr: false
 
   - script: |
+      set -xe
       rm -f $(Pipeline.Workspace)/build/lib/scitbx_array_family_flex_ext.so
       rm -f $(Pipeline.Workspace)/build/lib/phaser_ext.so
+      rm -f $(Pipeline.Workspace)/build/lib/phasertng_ext.so
       rm -f $(Pipeline.Workspace)/build/lib/solve_resolve_resolve_ext.so
     displayName: Fix broken cache
     continueOnError: true
