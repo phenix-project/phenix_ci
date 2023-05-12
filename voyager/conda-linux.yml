@@ -86,7 +86,8 @@ jobs:
   - script: |
       echo "##vso[task.setvariable variable=LC_ALL]C.utf8"
     displayName: Setup locale for Rocky Linux 8
-    condition: eq('${{ parameters.version[0] }}', 8)
+    condition: or(eq('${{ parameters.distribution }}', 'centos'),
+                  eq('${{ parameters.distribution }}', 'rockylinux'))
 
   # ubuntu setup
   - script: |
@@ -97,7 +98,7 @@ jobs:
 
   - script: |
       sudo apt-get install -y build-essential curl git libgl1-mesa-dev libglu1-mesa-dev locales subversion tcsh
-      sudo locale-gen en_US.UTF-8
+      sudo locale-gen en_US.UTF-8 en_GB.UTF-8
       sudo update-locale
     displayName: Install dependencies for Ubuntu
     condition: eq('${{ parameters.distribution }}', 'ubuntu')
