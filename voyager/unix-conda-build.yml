@@ -123,8 +123,8 @@ steps:
     rm -fr tests
     mkdir tests
     cd tests
-    export PYTHONDEVMODE=1
-    export PYTHONTRACEMALLOC=1
+    # export PYTHONDEVMODE=1
+    # export PYTHONTRACEMALLOC=1
     libtbx.run_tests_parallel \
       module=crys3d \
       module=phaser_regression \
