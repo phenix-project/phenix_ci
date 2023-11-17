@@ -35,7 +35,7 @@ jobs:
   variables:
     artifact_name: vs${{ parameters.vs }}_$(PYTHON_VERSION)
     day: $(Get-Date -Format dddd)
-    temp: "C:\\Miniconda3\\envs\\temp\\working"
+    temp: "C:\\Miniconda\\envs\\temp\\working"
 
   steps:
   - powershell: |
@@ -52,6 +52,18 @@ jobs:
 
   # download components
   - checkout: none
+
+  # create working directory on C:
+  - script: |
+      cd C:\Miniconda\envs
+      if %errorlevel% neq 0 exit /b %errorlevel%
+      mkdir temp
+      if %errorlevel% neq 0 exit /b %errorlevel%
+      cd temp
+      if %errorlevel% neq 0 exit /b %errorlevel%
+      mkdir working
+      if %errorlevel% neq 0 exit /b %errorlevel%
+    displayName: Create working directory
 
   # download daily cached build directory for builds
   # always do builds from scratch (starting with cctbx build) on Saturday night (Pacific)
@@ -82,7 +94,7 @@ jobs:
       allowPartiallySucceededBuilds: true
       allowFailedBuilds: true
       artifact: '$(artifact_name)'
-      path: $(Pipeline.Workspace)
+      path: $(temp)
     displayName: Download cached build
     condition: >
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
@@ -94,7 +106,7 @@ jobs:
     continueOnError: true
 
   - script: |
-      cd $(Pipeline.Workspace)
+      cd $(temp)
       tar -xf build.tar
       del build.tar
     displayName: Extract build tarball
@@ -125,7 +137,7 @@ jobs:
       project: '$(resources.pipeline.data_cache.projectID)'
       pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: $(MODULES)
-      path: $(Pipeline.Workspace)
+      path: $(temp)
     displayName: Download modules tarball
 
   - task: DownloadPipelineArtifact@2
@@ -134,12 +146,12 @@ jobs:
       project: '$(resources.pipeline.data_cache.projectID)'
       pipeline: '$(resources.pipeline.data_cache.pipelineID)'
       artifact: password
-      path: $(Pipeline.Workspace)
+      path: $(temp)
     displayName: Download password
 
   - script: |
       echo on
-      cd $(Pipeline.Workspace)
+      cd $(temp)
       openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
       openssl enc -d ^
         -aes-256-cbc ^
@@ -159,7 +171,7 @@ jobs:
     displayName: Get disk information on host
 
   - script: |
-      cd $(Pipeline.Workspace)
+      cd $(temp)
       copy modules\cctbx_project\libtbx\auto_build\bootstrap.py .
     displayName: Copy bootstrap.py
 
@@ -220,7 +232,7 @@ jobs:
     displayName: Get disk information on host
 
   - script: |
-      cd $(Pipeline.Workspace)
+      cd $(temp)
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
         call "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
       )
@@ -257,13 +269,13 @@ jobs:
   # preserve permissions
   # delete modules directory to free space for tarball
   - script: |
-      cd $(Pipeline.Workspace)
+      cd $(temp)
       rmdir /Q /S modules
       tar -chzf build.tar build
     displayName: Build tarball
     continueOnError: true
 
   # cache build directory every week for regular optimization build
-  - publish: $(Pipeline.Workspace)/build.tar
+  - publish: $(temp)/build.tar
     artifact: $(artifact_name)
     continueOnError: true
