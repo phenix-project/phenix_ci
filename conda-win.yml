@@ -151,7 +151,6 @@ jobs:
 
   - script: |
       echo on
-      cd $(temp)
       openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
       openssl enc -d ^
         -aes-256-cbc ^
@@ -165,15 +164,16 @@ jobs:
       tar -xf modules.tar
       del modules.tar
     displayName: Extract modules tarball
+    workingDirectory: $(temp)
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
 
   - script: |
-      cd $(temp)
       copy modules\cctbx_project\libtbx\auto_build\bootstrap.py .
     displayName: Copy bootstrap.py
+    workingDirectory: $(temp)
 
   # create conda environment
   # fresh downloads for "Update build cache" and "Full" pipelines
@@ -232,7 +232,6 @@ jobs:
     displayName: Get disk information on host
 
   - script: |
-      cd $(temp)
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
         call "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
       )
@@ -242,6 +241,7 @@ jobs:
       call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
       python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=%CONDA_PREFIX% --nproc=4
     displayName: Configure and Build
+    workingDirectory: $(temp)
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
@@ -269,10 +269,10 @@ jobs:
   # preserve permissions
   # delete modules directory to free space for tarball
   - script: |
-      cd $(temp)
       rmdir /Q /S modules
       tar -chzf build.tar build
     displayName: Build tarball
+    workingDirectory: $(temp)
     continueOnError: true
 
   # cache build directory every week for regular optimization build
