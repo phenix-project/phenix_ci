@@ -31,6 +31,14 @@ steps:
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
   displayName: Install miniforge
 
+- script: |
+    set -xe
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda update -y -n base conda
+    conda update -y -n base --all
+    conda info
+  displayName: Update conda
+
 - task: DownloadPipelineArtifact@2
   displayName: Download modules tarball
   inputs:

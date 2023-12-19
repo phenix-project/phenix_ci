@@ -43,6 +43,7 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda update -y -n base conda
     conda update -y -n base --all
+    conda info
   displayName: Update conda
 
 - task: DownloadPipelineArtifact@2
