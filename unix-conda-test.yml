@@ -36,9 +36,14 @@ steps:
 - script: |
     set -xe
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda install -n base -y mamba
   displayName: Install miniforge and mamba
+
+- script: |
+    set -xe
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda update -y -n base conda
+    conda update -y -n base --all
+  displayName: Update conda
 
 - task: DownloadPipelineArtifact@2
   inputs:
