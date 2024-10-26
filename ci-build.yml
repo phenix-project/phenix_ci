@@ -14,13 +14,13 @@ jobs:
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.linux }}
     parameters:
-      distribution: centos
-      version: [7]
+      distribution: rockylinux
+      version: [9]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.osx }}
     parameters:
-      vmImage: [11]
-      xcode_version: [12, 5, 1]
+      vmImage: [12]
+      xcode_version: [13, 4, 1]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
