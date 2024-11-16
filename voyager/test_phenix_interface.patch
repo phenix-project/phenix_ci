@@ -1,0 +1,19 @@
+diff --git a/additional_regressions/phenix_interface/test_phenix_interface.py b/additional_regressions/phenix_interface/test_phenix_interface.py
+index 48fd707..88f3bb9 100644
+--- a/additional_regressions/phenix_interface/test_phenix_interface.py
++++ b/additional_regressions/phenix_interface/test_phenix_interface.py
+@@ -174,7 +174,8 @@ ATOM     18  CG  ASN A   3      -2.006   1.739   6.861  1.00 12.82           C
+ ATOM     19  OD1 ASN A   3      -1.702   2.925   7.072  1.00 15.05           O
+ ATOM     20  ND2 ASN A   3      -1.271   0.715   7.306  1.00 13.48           N
+ """
+-  open("tst_phaser_interface.pdb", "w").write(pdb_raw)
++  with open("tst_phaser_interface.pdb", "w") as f:
++    f.write(pdb_raw)
+   import iotbx.pdb
+   pdb_in = iotbx.pdb.input("tst_phaser_interface.pdb")
+   from phaser.phenix_interface import check_for_model_identity_remark
+@@ -194,4 +195,3 @@ if __name__ == "__main__" :
+   exercise(sys.argv[1:])
+   os.chdir("..")
+   shutil.rmtree("tst_phenix_interface")
+-

@@ -19,6 +19,9 @@ jobs:
       secureFile: ssh.config
 
   # download sources
+  - checkout: self
+    path: ./phenix_ci
+
   - checkout: cctbx_project
     path: ./modules/cctbx_project
 
@@ -34,6 +37,13 @@ jobs:
       export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
       python bootstrap.py hot update --builder=voyager --python=39 ${{ parameters.flags }}
     displayName: Download sources
+
+  # patch test_phenix_interface.py in phaser_regression
+  - script: |
+      set -xe
+      cd $(Pipeline.Workspace)/modules/phaser_regression
+      git apply $(Pipeline.Workspace)/phenix_ci/voyager/test_phenix_interface.patch
+    displayName: Patch test_phenix_interface.py in phaser_regression
 
   # select Boost version
   - script: |
