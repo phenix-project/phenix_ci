@@ -55,6 +55,11 @@ steps:
 
 - script: |
     set -xe
+    rm -fr $(Pipeline.Workspace)/modules/boost
+  displayName: Remove Boost sources
+
+- script: |
+    set -xe
     cd $(Pipeline.Workspace)
     ln -s modules/cctbx_project/libtbx/auto_build/bootstrap.py
   displayName: Link bootstrap.py
@@ -117,7 +122,11 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
-    python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4
+    python bootstrap.py build \
+      --builder=${{ parameters.builder }} \
+      --use-conda=${CONDA_PREFIX} \
+      --config-flags="--cxxstd=c++14" \
+      --nproc=4
   displayName: Configure and Build
   retryCountOnTaskFailure: 3
 

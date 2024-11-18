@@ -30,13 +30,7 @@ jobs:
   - template: ./conda-linux.yml
     parameters:
       distribution: ubuntu
-      version: ['18', '04']
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
-  - template: ./conda-linux.yml
-    parameters:
-      distribution: ubuntu
-      version: ['16', '04']
+      version: ['22', '04']
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
   - template: ./conda-linux.yml
@@ -47,19 +41,19 @@ jobs:
       builder: ${{ parameters.builder }}
   - template: ./conda-osx.yml
     parameters:
+      vmImage: [15]
+      xcode_version: [16, 0]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-osx.yml
+    parameters:
+      vmImage: [14]
+      xcode_version: [15, 4]
+      modules: ${{ parameters.modules }}
+      builder: ${{ parameters.builder }}
+  - template: ./conda-osx.yml
+    parameters:
       vmImage: [13]
       xcode_version: [14, 3, 1]
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
-  - template: ./conda-osx.yml
-    parameters:
-      vmImage: [12]
-      xcode_version: [13, 4, 1]
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
-  - template: ./conda-osx.yml
-    parameters:
-      vmImage: [13]
-      xcode_version: [15, 2]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}

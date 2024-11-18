@@ -86,6 +86,12 @@ steps:
 
 - script: |
     set -xe
+    rm -fr $(Pipeline.Workspace)/modules/boost
+  displayName: Remove Boost sources
+  condition: ne(variables['PYTHON_VERSION'], 'py27')
+
+- script: |
+    set -xe
     cd $(Pipeline.Workspace)/modules
     SCONS_URL="https://github.com/SCons/scons/archive/3.1.1.zip"
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -176,7 +182,11 @@ steps:
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
     conda activate $(PYTHON_VERSION)
     cd $(Pipeline.Workspace)
-    python bootstrap.py build --builder=${{ parameters.builder }} --use-conda=${CONDA_PREFIX} --nproc=4
+    python bootstrap.py build \
+      --builder=${{ parameters.builder }} \
+      --use-conda=${CONDA_PREFIX} \
+      --config-flags="--cxxstd=c++14" \
+      --nproc=4
   displayName: Configure and Build
 
 # test
