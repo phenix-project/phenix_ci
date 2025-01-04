@@ -192,7 +192,7 @@ jobs:
       if %errorlevel% neq 0 exit /b %errorlevel%
       call %CONDA%\condabin\conda.bat create -y --offline -c $(Pipeline.Workspace)\channel\ --override-channels -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)\channel\env.txt
       if %errorlevel% neq 0 exit /b %errorlevel%
-      call %CONDA%\condabin\conda.bat install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml pytest=7.0
+      call %CONDA%\condabin\conda.bat install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml
       if %errorlevel% neq 0 exit /b %errorlevel%
     displayName: Create conda environment
 
