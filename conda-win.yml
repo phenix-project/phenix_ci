@@ -59,7 +59,8 @@ jobs:
     displayName: Get disk information on host
 
   # download components
-  - checkout: none
+  - checkout: self
+    path: phenix_ci
 
   # create working directory on C:
   - script: |
@@ -178,6 +179,13 @@ jobs:
       echo on
       rmdir /S /Q modules\boost
     displayName: Remove Boost sources
+    workingDirectory: $(temp)
+
+  - script: |
+      echo on
+      cd modules\dxtbx
+      copy $(Pipeline.Workspace)\phenix_ci\patches\dxtbx_SConscript .\SConscript
+    displayName: Patch dxtbx 3.22 to remove zlib
     workingDirectory: $(temp)
 
   - powershell: |
