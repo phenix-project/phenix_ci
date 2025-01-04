@@ -59,7 +59,8 @@ jobs:
     displayName: Get disk information on host
 
   # download components
-  - checkout: none
+  - checkout: self
+    path: phenix_ci
 
   # download daily cached build directory for builds
   # always do builds from scratch (starting with cctbx build) on Saturday night (Pacific)
@@ -138,6 +139,12 @@ jobs:
       cd $(Pipeline.Workspace)
       rmdir /S /Q modules\boost
     displayName: Remove Boost sources
+
+  - script: |
+      echo on
+      cd $(Pipeline.Workspace)\modules\dxtbx
+      copy $(Pipeline.Workspace)\phenix_ci\patches\dxtbx_SConscript .\SConscript
+    displayName: Use patched dxtbx SConscript to remove zlib
 
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
