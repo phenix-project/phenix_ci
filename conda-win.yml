@@ -119,6 +119,7 @@ jobs:
       tar -xf build.tar
       del build.tar
     displayName: Extract build tarball
+    workingDirectory: $(temp)
     condition: >
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
                  ne(variables['day'], 'Sunday')),
