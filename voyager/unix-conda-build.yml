@@ -110,12 +110,6 @@ steps:
     conda install -y -c conda-forge --no-deps -n $(PYTHON_VERSION) junit-xml
   displayName: Create conda environment
 
-- script: |
-    set -xe
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda remove -y -n $(PYTHON_VERSION) --force boost boost-cpp
-  displayName: Remove Boost from conda environment
-
 # build
 - script: |
     set -xe
