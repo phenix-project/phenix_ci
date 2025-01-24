@@ -274,25 +274,6 @@ jobs:
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
 
-  # test
-  # - script: |
-  #     cd $(Pipeline.Workspace)
-  #     call .\build\setpaths.bat
-  #     mkdir tests
-  #     cd tests
-  #     phenix_regression.run_tests_parallel nproc=4
-  #   condition: or(and(eq(variables['PYTHON_VERSION'], 'py27'),
-  #                     eq('${{ parameters.vs }}', 'vs2015')),
-  #                 ne(variables['PYTHON_VERSION'], 'py27'))
-  #   failOnStderr: false
-  #   displayName: Test
-
-  # - task: PublishTestResults@2
-  #   condition: succeededOrFailed()
-  #   inputs:
-  #     testResultsFormat: 'JUnit'
-  #     testResultsFiles: '$(Pipeline.Workspace)\tests\output.xml'
-
   # preserve permissions
   # delete modules directory to free space for tarball
   - script: |

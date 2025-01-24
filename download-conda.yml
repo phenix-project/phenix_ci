@@ -77,9 +77,6 @@ jobs:
       mkdir $(PYTHON_VERSION)_$(OS)
       cd $(PYTHON_VERSION)_$(OS)
       CONDA_ENV_FILE=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_$(PYTHON_VERSION)_$(OS).txt2
-      if [[ "$(PYTHON_VERSION)" == "py27"  ]]; then
-        CONDA_ENV_FILE=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_$(PYTHON_VERSION)_$(OS).txt
-      fi
       for url in `grep https ${CONDA_ENV_FILE}`; do
         filename=${url##*/}
         filename=${filename%#*}

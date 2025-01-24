@@ -3,7 +3,7 @@
 # Variables:
 #   CONDA: Linux, MacOSX
 #   OS: linux-64, osx-64
-#   PYTHON_VERSION: py27, py36, py37, py38
+#   PYTHON_VERSION: py39, py310, py311, py312, py313
 #   MODULES: <modules artifact name>
 #
 # Optional Parameters:
