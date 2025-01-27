@@ -124,6 +124,24 @@ steps:
   displayName: Configure and Build
   retryCountOnTaskFailure: 3
 
+# clean up matplotlib
+- script: |
+    set -xe
+    rm -fr ~/.matplotlib
+    rm -fr ~/.cache/fontconfig
+
+    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
+    conda activate $(PYTHON_VERSION)
+    cd $(Pipeline.Workspace)
+    source ./build/setpaths.sh
+
+    libtbx.python -c "import matplotlib.pyplot as plt"
+    libtbx.python -c "import matplotlib; print(matplotlib.get_cachedir())"
+
+  displayName: Clean up matplotlib
+  continueOnError: true
+  failOnStderr: false
+
 # test
 - script: |
     set -xe
