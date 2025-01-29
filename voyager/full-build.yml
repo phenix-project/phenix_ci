@@ -30,12 +30,6 @@ jobs:
   - template: ./conda-linux.yml
     parameters:
       distribution: ubuntu
-      version: ['18', '04']
-      modules: ${{ parameters.modules }}
-      builder: ${{ parameters.builder }}
-  - template: ./conda-linux.yml
-    parameters:
-      distribution: ubuntu
       version: ['22', '04']
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
