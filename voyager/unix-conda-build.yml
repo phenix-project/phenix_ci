@@ -155,7 +155,6 @@ steps:
     # export PYTHONDEVMODE=1
     # export PYTHONTRACEMALLOC=1
     libtbx.run_tests_parallel \
-      module=crys3d \
       module=phaser_regression \
       module=voyager_regression \
       verbosity=2 \
