@@ -131,9 +131,9 @@ jobs:
     failOnStderr: false
 
   - script: |
-      cd $(Pipeline.Workspace)
       del /S /Q .\build\lib\_pycbf.pyd
     displayName: Fix broken cache on Windows
+    workingDirectory: $(temp)
     condition: >
       and(or(and(eq(variables['Build.DefinitionName'], 'Update build cache'),
                 ne(variables['day'], 'Sunday')),
