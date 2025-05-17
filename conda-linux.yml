@@ -12,7 +12,7 @@
 #   builder: <cctbx builder>
 
 jobs:
-- job: ${{ format('{0}_{1}', parameters.distribution, join('_', parameters.version) ) }}
+- job: ${{ format('{0}_{1}', replace(parameters.distribution, 'cctbx/', ''), join('_', parameters.version) ) }}
   pool:
     vmImage: ubuntu-latest
   timeoutInMinutes: 360
