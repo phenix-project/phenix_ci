@@ -14,7 +14,7 @@ jobs:
       builder: ${{ parameters.builder }}
   - template: ${{ parameters.linux }}
     parameters:
-      distribution: rockylinux
+      distribution: cctbx/rockylinux
       version: [9]
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
