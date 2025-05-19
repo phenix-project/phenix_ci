@@ -65,20 +65,14 @@ jobs:
 
   # https://github.com/ApexAI/performance_test/blob/master/azure-pipelines.yml#L9-L17
 
-  # centos setup
+  # rockylinux setup
   - script: |
       set -xe
       sudo yum groupinstall -y 'Development Tools'
       sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh wget
       locale -a
-    displayName: Install dependencies for CentOS
-    condition: or(eq('${{ parameters.distribution }}', 'centos'),
-                  eq('${{ parameters.distribution }}', 'rockylinux'))
-
-  - script: |
-      echo "##vso[task.setvariable variable=LC_ALL]C.utf8"
-    displayName: Setup locale for Rocky Linux
-    condition: eq('${{ parameters.distribution }}', 'rockylinux')
+    displayName: Install dependencies for Rocky Linux
+    condition: eq('${{ parameters.distribution }}', 'cctbx/rockylinux')
 
   # ubuntu setup
   - script: |
@@ -96,8 +90,7 @@ jobs:
 
   - script: |
       echo "##vso[task.setvariable variable=LC_ALL]en_US.utf8"
-    displayName: Setup locale for Ubuntu
-    condition: eq('${{ parameters.distribution }}', 'ubuntu')
+    displayName: Set locale
 
   - script: |
       echo $(System.CollectionId)
