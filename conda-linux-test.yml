@@ -30,7 +30,7 @@ jobs:
     options: "--name ci-container -v /usr/bin/docker:/tmp/docker:ro"
 
   variables:
-    artifact_name: ${{ parameters.distribution }}_${{ join('.', parameters.version) }}_$(PYTHON_VERSION)
+    artifact_name: ${{ replace(parameters.distribution, 'cctbx/', '') }}_${{ join('.', parameters.version) }}_$(PYTHON_VERSION)
     day: Sunday
 
   steps:
