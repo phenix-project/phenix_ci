@@ -72,7 +72,7 @@ jobs:
       sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh
       locale -a
     displayName: Install dependencies for Rocky Linux
-    condition: eq('${{ parameters.distribution }}', 'cctbx/rockylinux'))
+    condition: eq('${{ parameters.distribution }}', 'cctbx/rockylinux')
 
   # ubuntu setup
   - script: |
