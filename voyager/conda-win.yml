@@ -180,6 +180,15 @@ jobs:
       and(ne(variables['Build.DefinitionName'], 'Update build cache'),
           ne(variables['Build.DefinitionName'], 'Full'))
 
+  # add conda to path
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/anaconda?view=azure-devops&tabs=windows#add-conda-to-your-system-path
+  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+    displayName: Add conda to PATH
+
+  # accept conda tos
+  - script: conda config --set plugins.auto_accept_tos yes
+    displayName: Accept conda TOS
+
   - script: |
       call %CONDA%\condabin\conda.bat install -y conda-build
       cd $(Pipeline.Workspace)\channel
