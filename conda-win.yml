@@ -194,19 +194,6 @@ jobs:
     displayName: Extract modules tarball
     workingDirectory: $(temp)
 
-  - script: |
-      echo on
-      rmdir /S /Q modules\boost
-    displayName: Remove Boost sources
-    workingDirectory: $(temp)
-
-  - script: |
-      echo on
-      cd modules\dxtbx
-      copy $(Pipeline.Workspace)\phenix_ci\patches\dxtbx_SConscript .\SConscript
-    displayName: Use patched dxtbx SConscript to remove zlib
-    workingDirectory: $(temp)
-
   - powershell: |
       Get-CimInstance -Class CIM_LogicalDisk | Select-Object @{Name="Size(GB)";Expression={$_.size/1gb}}, @{Name="Free Space(GB)";Expression={$_.freespace/1gb}}, @{Name="Free (%)";Expression={"{0,6:P0}" -f(($_.freespace/1gb) / ($_.size/1gb))}}, DeviceID, DriveType | Where-Object DriveType -EQ '3'
     displayName: Get disk information on host
@@ -292,7 +279,6 @@ jobs:
       python bootstrap.py build ^
         --builder=${{ parameters.builder }} ^
         --use-conda=%CONDA_PREFIX% ^
-        --config-flags="--cxxstd=c++14" ^
         --nproc=4
     displayName: Configure and Build
     workingDirectory: $(temp)
