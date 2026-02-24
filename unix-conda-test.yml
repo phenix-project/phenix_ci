@@ -38,14 +38,6 @@ steps:
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
   displayName: Install miniforge and mamba
 
-- script: |
-    set -xe
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda update -y -n base conda
-    conda update -y -n base --all
-    conda info
-  displayName: Update conda
-
 - task: DownloadPipelineArtifact@2
   inputs:
     source: 'specific'
@@ -67,8 +59,6 @@ steps:
 - script: |
     set -xe
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda create -y -n openssl openssl=1.1
-    conda activate openssl
     cd $(Pipeline.Workspace)
     openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
     openssl enc -d \

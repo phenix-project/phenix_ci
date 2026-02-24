@@ -4,7 +4,7 @@
 #
 # Variables:
 #   OS: linux-64, osx-64, win-64
-#   PYTHON_VERSION: py39, py310, py311, py312, py313
+#   PYTHON_VERSION: py39, py310, py311, py312, py313, py314
 
 jobs:
 - job: conda_packages
@@ -29,6 +29,9 @@ jobs:
       linux_py313:
         OS: linux-64
         PYTHON_VERSION: py313
+      linux_py314:
+        OS: linux-64
+        PYTHON_VERSION: py314
       macos_py39:
         OS: osx-64
         PYTHON_VERSION: py39
@@ -44,6 +47,9 @@ jobs:
       macos_py313:
         OS: osx-64
         PYTHON_VERSION: py313
+      macos_py314:
+        OS: osx-64
+        PYTHON_VERSION: py314
       win_py39:
         OS: win-64
         PYTHON_VERSION: py39
@@ -59,6 +65,9 @@ jobs:
       win_py313:
         OS: win-64
         PYTHON_VERSION: py313
+      win_py314:
+        OS: win-64
+        PYTHON_VERSION: py314
 
   steps:
   - task: InstallSSHKey@0
@@ -76,7 +85,7 @@ jobs:
       cd $(Pipeline.Workspace)
       mkdir $(PYTHON_VERSION)_$(OS)
       cd $(PYTHON_VERSION)_$(OS)
-      CONDA_ENV_FILE=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_$(PYTHON_VERSION)_$(OS).txt2
+      CONDA_ENV_FILE=$(Pipeline.Workspace)/modules/phenix/conda_envs/phenix_$(PYTHON_VERSION)_$(OS).txt
       for url in `grep https ${CONDA_ENV_FILE}`; do
         filename=${url##*/}
         filename=${filename%#*}

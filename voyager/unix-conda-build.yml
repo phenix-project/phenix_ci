@@ -31,14 +31,6 @@ steps:
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
   displayName: Install miniforge
 
-- script: |
-    set -xe
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda update -y -n base conda
-    conda update -y -n base --all
-    conda info
-  displayName: Update conda
-
 - task: DownloadPipelineArtifact@2
   displayName: Download modules tarball
   inputs:
@@ -52,11 +44,6 @@ steps:
     tar -xf modules.tar
     rm -f modules.tar
   displayName: Extract modules tarball
-
-- script: |
-    set -xe
-    rm -fr $(Pipeline.Workspace)/modules/boost
-  displayName: Remove Boost sources
 
 - script: |
     set -xe
@@ -119,7 +106,6 @@ steps:
     python bootstrap.py build \
       --builder=${{ parameters.builder }} \
       --use-conda=${CONDA_PREFIX} \
-      --config-flags="--cxxstd=c++14" \
       --nproc=4
   displayName: Configure and Build
   retryCountOnTaskFailure: 3

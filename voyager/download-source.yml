@@ -35,7 +35,7 @@ jobs:
       set -xe
       cd $(Pipeline.Workspace)
       export SVN_SSH="ssh -F $(ssh_config.secureFilePath)"
-      python bootstrap.py hot update --builder=voyager --python=39 ${{ parameters.flags }}
+      python bootstrap.py hot update --builder=voyager ${{ parameters.flags }}
     displayName: Download sources
 
   # patch test_phenix_interface.py in phaser_regression
@@ -44,13 +44,6 @@ jobs:
       cd $(Pipeline.Workspace)/modules/phaser_regression
       git apply $(Pipeline.Workspace)/phenix_ci/voyager/test_phenix_interface.patch
     displayName: Patch test_phenix_interface.py in phaser_regression
-
-  # select Boost version
-  - script: |
-      set -xe
-      cd $(Pipeline.Workspace)/modules/boost
-      git checkout 1.74
-    displayName: Select Boost 1.74
 
   # change optimization level (linux, macOS)
   - script: |

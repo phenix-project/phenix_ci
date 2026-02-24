@@ -38,14 +38,6 @@ steps:
     bash $(Pipeline.Workspace)/miniforge/Miniforge3-$(CONDA)-x86_64.sh -b -u -p $(Pipeline.Workspace)/miniforge
   displayName: Install miniforge
 
-- script: |
-    set -xe
-    source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda update -y -n base conda
-    conda update -y -n base --all
-    conda info
-  displayName: Update conda
-
 - task: DownloadPipelineArtifact@2
   inputs:
     source: 'specific'
@@ -67,8 +59,6 @@ steps:
 - script: |
     set -xe
     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-    conda create -y -n openssl openssl=1.1
-    conda activate openssl
     cd $(Pipeline.Workspace)
     openssl rsautl -decrypt -inkey $(private_key.secureFilePath) -in password.enc -out password
     openssl enc -d \
@@ -83,11 +73,6 @@ steps:
     tar -xf modules.tar
     rm modules.tar
   displayName: Extract modules tarball
-
-- script: |
-    set -xe
-    rm -fr $(Pipeline.Workspace)/modules/boost
-  displayName: Remove Boost sources
 
 - script: |
     set -xe
@@ -139,20 +124,6 @@ steps:
     conda create -y --offline -n $(PYTHON_VERSION) --file $(Pipeline.Workspace)/channel/env.txt
   displayName: Create conda environment
 
-# - script: |
-#     set -xe
-#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-#     conda remove -y --force -n $(PYTHON_VERSION) llvm-openmp
-#   condition: eq('${{ parameters.version[0] }}', 6)
-#   displayName: Remove OpenMP headers from conda environment
-
-# - script: |
-#     source $(Pipeline.Workspace)/miniforge/etc/profile.d/conda.sh
-#     conda remove -y --force -n $(PYTHON_VERSION) boost boost-cpp
-#     conda install -y --no-deps -c cctbx-old-abi -n $(PYTHON_VERSION) boost boost-cpp
-#   displayName: Use Boost from cctbx-old-abi channel
-#   condition: or(eq('${{ parameters.version[0] }}', 6), eq('${{ parameters.version[0] }}', 7), eq('${{ parameters.version[0] }}', 14))
-
 # build
 - script: |
     set -xe
@@ -162,7 +133,6 @@ steps:
     python bootstrap.py build \
       --builder=${{ parameters.builder }} \
       --use-conda=${CONDA_PREFIX} \
-      --config-flags="--cxxstd=c++14" \
       --nproc=4
   displayName: Configure and Build
 
