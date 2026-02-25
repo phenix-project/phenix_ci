@@ -216,6 +216,7 @@ jobs:
 
   - script: |
       cd $(Pipeline.Workspace)
+      set TEMP=$(Pipeline.Workspace)\temp
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
         call "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
       )
