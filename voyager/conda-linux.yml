@@ -74,8 +74,9 @@ jobs:
   - script: |
       set -xe
       sudo yum groupinstall -y 'Development Tools'
-      sudo yum install -y mesa-libGLU-devel mesa-libGL-devel openssl tcsh
+      sudo yum install -y glibc-lanpack-en mesa-libGLU-devel mesa-libGL-devel openssl tcsh
       locale -a
+      sudo localectl set-locale LANG=en_US.UTF-8
     displayName: Install dependencies for Rocky Linux
     condition: eq('${{ parameters.distribution }}', 'cctbx/rockylinux')
 
