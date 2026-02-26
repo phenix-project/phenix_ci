@@ -215,6 +215,13 @@ jobs:
     displayName: Get disk information on host
 
   - script: |
+      call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
+      cd %CONDA_PREFIX%\Library\lib
+      copy libpng.lib png.lib
+      if %errorlevel% neq 0 exit /b %errorlevel%
+    displayName: Fix png.lib
+
+  - script: |
       cd $(Pipeline.Workspace)
       set TEMP=$(Pipeline.Workspace)\temp
       if exist "C:\Program Files (x86)\Microsoft Visual Studio\${{ parameters.vs }}\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" (
