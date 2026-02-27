@@ -5,7 +5,7 @@
 jobs:
   - template: ./conda-win.yml
     parameters:
-      vmImage: windows-2022
+      vmImage: windows-latest
       vs: 2022
       modules: ${{ parameters.modules }}
       builder: ${{ parameters.builder }}
