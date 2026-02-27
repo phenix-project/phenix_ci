@@ -269,9 +269,11 @@ jobs:
     displayName: Get disk information on host
 
   - script: |
-      call %CONDA%\condabin\activate.bat %PYTHON_VERSION%
-      cd %CONDA_PREFIX%\Library\lib
-      copy libpng.lib png.lib
+      dir C:\Miniconda\envs
+      dir C:\Miniconda\envs\$(PYTHON_VERSION)
+      dir C:\Miniconda\envs\$(PYTHON_VERSION)\Library
+      dir C:\Miniconda\envs\$(PYTHON_VERSION)\Library\lib
+      copy C:\Miniconda\envs\$(PYTHON_VERSION)\Library\lib\libpng.lib C:\Miniconda\envs\$(PYTHON_VERSION)\Library\lib\png.lib
       if %errorlevel% neq 0 exit /b %errorlevel%
     displayName: Fix png.lib
 
